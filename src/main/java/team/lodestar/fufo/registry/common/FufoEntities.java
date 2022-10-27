@@ -28,7 +28,7 @@ public class FufoEntities {
 
     public static final RegistryObject<EntityType<FallingCrashpodEntity>> FALLING_CRASHPOD = register("falling_crashpod", EntityType.Builder.<FallingCrashpodEntity>of((t, l) -> new FallingCrashpodEntity(l), MobCategory.MISC).sized(0.5f, 0.5f));
 
-    public static final RegistryObject<EntityType<WispEntity>> METEOR_FIRE_WISP = register("wisp", EntityType.Builder.<WispEntity>of((t, l) -> new WispEntity(l), MobCategory.MISC).sized(0.5f, 0.5f));
+    public static final RegistryObject<EntityType<WispEntity>> METEOR_FIRE_WISP = register("wisp", EntityType.Builder.<WispEntity>of((t, l) -> new WispEntity(l), MobCategory.MISC).sized(0.75f, 0.75f));
 
     public static final RegistryObject<EntityType<HologramWeaveEntity>> HOLOGRAM_WEAVE = register("hologram_weave", EntityType.Builder.<HologramWeaveEntity>of((t, l) -> new HologramWeaveEntity(l), MobCategory.MISC).sized(1.0F, 1.0F));
     public static final RegistryObject<EntityType<WeaveEntity>> BASIC_WEAVE = register("basic_weave", EntityType.Builder.<WeaveEntity>of((t, l) -> new WeaveEntity(l), MobCategory.MISC).sized(1.0F, 1.0F));

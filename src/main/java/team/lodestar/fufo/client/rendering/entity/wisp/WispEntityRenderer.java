@@ -54,7 +54,7 @@ public class WispEntityRenderer extends EntityRenderer<WispEntity> {
         }
         List<Vector4f> mappedPastPositions = positions.stream().map(p -> p.position).map(p -> new Vector4f((float) p.x, (float) p.y, (float) p.z, 1)).collect(Collectors.toList());
 
-        Color color = new Color(219, 88, 239);
+        Color color = new Color(225, 101, 245);
         VFXBuilders.WorldVFXBuilder trailBuilder = VFXBuilders.createWorld().setPosColorTexLightmapDefaultFormat().setColor(color).setOffset(-x, -y, -z);
         VFXBuilders.WorldVFXBuilder builder = VFXBuilders.createWorld().setPosColorTexLightmapDefaultFormat().setColor(color);
         poseStack.pushPose();
@@ -66,9 +66,13 @@ public class WispEntityRenderer extends EntityRenderer<WispEntity> {
         poseStack.mulPose(Minecraft.getInstance().getEntityRenderDispatcher().cameraOrientation());
         poseStack.mulPose(Vector3f.YP.rotationDegrees(180f));
 
-        builder.setAlpha(0.5f).renderQuad(DELAYED_RENDER.getBuffer(STAR_TYPE), poseStack, 0.8f);
-        builder.setAlpha(0.75f).renderQuad(DELAYED_RENDER.getBuffer(STAR_TYPE), poseStack, 0.4f);
-        builder.setColor(color.brighter()).setAlpha(1).renderQuad(DELAYED_RENDER.getBuffer(STAR_TYPE), poseStack, 0.25f);
+        long time = (entity.level.getGameTime() + entity.timeOffset);
+        float pValue = (float) (((time * 1.5f) % 200L) / 200f * (Math.PI * 2));
+        float sine = Mth.sin(pValue) * 0.1f;
+        float sizeMultiplier = (float) (1f + sine + Math.pow(sine*3, 2));
+        builder.setAlpha(0.5f).renderQuad(DELAYED_RENDER.getBuffer(STAR_TYPE), poseStack, 0.8f*sizeMultiplier);
+        builder.setAlpha(0.75f).renderQuad(DELAYED_RENDER.getBuffer(STAR_TYPE), poseStack, 0.4f*sizeMultiplier);
+        builder.setColor(color.brighter()).setAlpha(1).renderQuad(DELAYED_RENDER.getBuffer(STAR_TYPE), poseStack, 0.25f*sizeMultiplier);
 
         RenderSystem.disableBlend();
         poseStack.popPose();

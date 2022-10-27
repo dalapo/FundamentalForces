@@ -16,7 +16,7 @@ public class FufoKeybinds {
     public static KeyMapping swapHotbar;
 
     public static void registerKeyBinding(RegisterKeyMappingsEvent event) {
-        swapHotbar = registerKeyBinding(event, new KeyMapping(LangHelpers.getKey("swapHotbar"), KeyConflictContext.IN_GAME, KeyModifier.NONE, getKey(GLFW.GLFW_KEY_Z), CATEGORY));
+        swapHotbar = registerKeyBinding(event, new KeyMapping(LangHelpers.getKey("swapHotbar"), KeyConflictContext.IN_GAME, KeyModifier.NONE, getKey(GLFW.GLFW_KEY_X), CATEGORY));
     }
 
     public static KeyMapping registerKeyBinding(RegisterKeyMappingsEvent event, KeyMapping key) {

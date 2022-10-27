@@ -15,9 +15,9 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import team.lodestar.fufo.common.capability.*;
 import team.lodestar.fufo.common.fluid.FluidPipeNetworkRegistry;
+import team.lodestar.fufo.common.magic.spell.PlayerSpellHandler;
 import team.lodestar.fufo.core.fluid.FluidPipeNetwork;
-import team.lodestar.fufo.unsorted.handlers.PlayerSpellHotbarHandler;
-import team.lodestar.fufo.unsorted.handlers.StarfallEventHandler;
+import team.lodestar.fufo.common.starfall.StarfallEventHandler;
 import team.lodestar.lodestone.events.types.RightClickEmptyServer;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
@@ -47,12 +47,12 @@ public class RuntimeEvents {
 
     @SubscribeEvent
     public static void playerTick(TickEvent.PlayerTickEvent event) {
-        PlayerSpellHotbarHandler.playerTick(event);
+        PlayerSpellHandler.playerTick(event);
     }
 
     @SubscribeEvent
     public static void playerInteract(PlayerInteractEvent.RightClickBlock event) {
-        PlayerSpellHotbarHandler.playerInteract(event);
+        PlayerSpellHandler.playerInteract(event);
     }
 
     @SubscribeEvent

@@ -1,22 +1,27 @@
-package team.lodestar.fufo.core.spell.hotbar;
+package team.lodestar.fufo.common.magic.spell;
 
-import team.lodestar.fufo.core.spell.SpellInstance;
+import team.lodestar.fufo.core.magic.spell.SpellInstance;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 
-public class SpellHotbar {
+public class SpellStorage {
     public final int size;
-    public NonNullList<SpellInstance> spells;
+    public final NonNullList<SpellInstance> spells;
 
-    public SpellHotbar(int size) {
+    public SpellStorage(int size) {
         this.size = size;
         this.spells = NonNullList.withSize(size, SpellInstance.EMPTY);
     }
 
     public SpellInstance getSelectedSpell(Player player) {
-        return spells.get(getSelectedSpellIndex(player));
+        return getSpell(getSelectedSpellIndex(player));
     }
+
+    public SpellInstance getSpell(int slot) {
+        return spells.get(slot);
+    }
+
     public int getSelectedSpellIndex(Player player) {
         return player.getInventory().selected;
     }

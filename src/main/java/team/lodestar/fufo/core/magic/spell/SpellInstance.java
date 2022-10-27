@@ -1,9 +1,9 @@
-package team.lodestar.fufo.core.spell;
+package team.lodestar.fufo.core.magic.spell;
 
 import team.lodestar.fufo.common.capability.FufoPlayerDataCapability;
+import team.lodestar.fufo.common.magic.spell.datas.SpellAttributeMap;
 import team.lodestar.fufo.common.packets.spell.SyncSpellCooldownPacket;
-import team.lodestar.fufo.core.element.MagicElement;
-import team.lodestar.fufo.registry.common.magic.FufoMagicElements;
+import team.lodestar.fufo.registry.common.magic.FufoSpellDataKeys;
 import team.lodestar.fufo.registry.common.magic.FufoSpellTypes;
 import team.lodestar.lodestone.systems.easing.Easing;
 import net.minecraft.core.BlockPos;
@@ -14,6 +14,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.PacketDistributor;
 import team.lodestar.fufo.registry.common.FufoPackets;
+
+import javax.annotation.Nullable;
 
 public class SpellInstance {
 
@@ -26,6 +28,7 @@ public class SpellInstance {
     public float selectedFadeAnimation;
     public SpellCastMode castMode;
     public SpellEffect effect;
+    public final SpellAttributeMap attributes = new SpellAttributeMap();
 
     public SpellInstance(SpellType spellType, SpellCastMode castMode) {
         this.spellType = spellType;
@@ -35,17 +38,6 @@ public class SpellInstance {
 
     public SpellInstance(SpellType spellType) {
         this.spellType = spellType;
-    }
-
-    public SpellInstance setCooldown(SpellCooldown cooldown) {
-        this.cooldown = cooldown;
-        return this;
-    }
-
-    public SpellInstance setAndSyncCooldown(ServerPlayer player) {
-        setCooldown(spellType.defaultCooldownSupplier.apply(this));
-        FufoPlayerDataCapability.getCapabilityOptional(player).ifPresent(c -> FufoPackets.INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), new SyncSpellCooldownPacket(player.getUUID(), c.hotbarHandler.spellHotbar.getSelectedSpellIndex(player), cooldown)));
-        return this;
     }
 
     public void cast(ServerPlayer player, BlockPos pos, BlockHitResult hitVec) {
@@ -87,6 +79,23 @@ public class SpellInstance {
         return 0.5f - easing.ease(selectedFadeAnimation, 0, 0.5f, 20);
     }
 
+    public void setCooldown(SpellCooldown cooldown) {
+        setCooldown(cooldown, null);
+    }
+
+    public void setCooldown(SpellCooldown cooldown, @Nullable ServerPlayer serverPlayer) {
+        this.cooldown = cooldown;
+        if (serverPlayer != null) {
+            FufoPlayerDataCapability.getCapabilityOptional(serverPlayer).ifPresent(c -> FufoPackets.INSTANCE.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new SyncSpellCooldownPacket(serverPlayer.getUUID(), c.hotbarHandler.spellStorage.getSelectedSpellIndex(serverPlayer), cooldown)));
+        }
+    }
+
+    public void setDefaultCooldown(ServerPlayer player) {
+        attributes.getSpellAttribute(FufoSpellDataKeys.COOLDOWN_KEY).ifPresent(d -> {
+            setCooldown(new SpellCooldown(d.duration), player);
+        });
+    }
+
     public boolean isOnCooldown() {
         return SpellCooldown.shouldTick(cooldown);
     }
@@ -104,6 +113,13 @@ public class SpellInstance {
         if (isOnCooldown()) {
             spellTag.put("spellCooldown", cooldown.serializeNBT());
         }
+        if (!isEmpty()) {
+            CompoundTag attributesTag = new CompoundTag();
+            for (SpellAttribute attribute : attributes.values()) {
+                attributesTag.put(attribute.id.toString(), attribute.serializeNBT());
+            }
+            spellTag.put("attributes", attributesTag);
+        }
         return spellTag;
     }
 
@@ -111,7 +127,17 @@ public class SpellInstance {
         SpellInstance spellInstance = new SpellInstance(FufoSpellTypes.SPELL_TYPES.get(new ResourceLocation(tag.getString("type"))),
                 SpellCastMode.deserializeNBT(tag.getCompound("castMode")));
         if (tag.contains("spellCooldown")) {
-            spellInstance.setCooldown(SpellCooldown.deserializeNBT(tag.getCompound("spellCooldown")));
+            spellInstance.cooldown = SpellCooldown.deserializeNBT(tag.getCompound("spellCooldown"));
+        }
+        CompoundTag attributes = tag.getCompound("attributes");
+        for (String path : attributes.getAllKeys()) {
+            ResourceLocation key = new ResourceLocation(path);
+            FufoSpellDataKeys.DataKey<? extends SpellAttribute> dataKey = FufoSpellDataKeys.DATA_KEYS.get(key);
+            if (dataKey == null) {
+                return EMPTY;
+            }
+            SpellAttribute attribute = dataKey.serializer.apply(attributes.getCompound(path));
+            spellInstance.attributes.put(key, attribute);
         }
         return spellInstance;
     }

@@ -11,10 +11,7 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.RegisterEvent;
-import team.lodestar.fufo.common.command.IssueStarfallCommand;
-import team.lodestar.fufo.common.command.SetSpellCommand;
-import team.lodestar.fufo.common.command.StarfallAreaCheckCommand;
-import team.lodestar.fufo.common.command.ToggleManualTickingCommand;
+import team.lodestar.fufo.common.command.*;
 import team.lodestar.fufo.common.command.argument.StarfallResultArgumentType;
 
 import static team.lodestar.fufo.FufoMod.FUFO;
@@ -25,9 +22,10 @@ public class FufoCommands {
     @SubscribeEvent
     public static void registerCommands(RegisterCommandsEvent event) {
         CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
-        LiteralCommandNode<CommandSourceStack> cmd = dispatcher.register(Commands.literal("es")
+        LiteralCommandNode<CommandSourceStack> cmd = dispatcher.register(Commands.literal("fufo")
                 .then(IssueStarfallCommand.register())
                 .then(SetSpellCommand.register())
+                .then(PrintSpellCommand.register())
                 .then(StarfallAreaCheckCommand.register())
                 .then(ToggleManualTickingCommand.register())
         );

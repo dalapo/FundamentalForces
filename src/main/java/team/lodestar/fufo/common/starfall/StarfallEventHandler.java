@@ -1,4 +1,4 @@
-package team.lodestar.fufo.unsorted.handlers;
+package team.lodestar.fufo.common.starfall;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;

@@ -1,7 +1,7 @@
 package team.lodestar.fufo.common.packets.spell;
 
 import team.lodestar.fufo.common.capability.FufoPlayerDataCapability;
-import team.lodestar.fufo.core.spell.SpellCooldown;
+import team.lodestar.fufo.core.magic.spell.SpellCooldown;
 import team.lodestar.lodestone.systems.network.LodestoneClientPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
@@ -33,7 +33,7 @@ public class SyncSpellCooldownPacket extends LodestoneClientPacket {
     public void execute(Supplier<NetworkEvent.Context> context) {
         Player player = Minecraft.getInstance().player.level.getPlayerByUUID(uuid);
         FufoPlayerDataCapability.getCapabilityOptional(player).ifPresent(c -> {
-            c.hotbarHandler.spellHotbar.spells.get(slot).cooldown = cooldownData;
+            c.hotbarHandler.spellStorage.spells.get(slot).cooldown = cooldownData;
         });
     }
 

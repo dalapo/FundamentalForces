@@ -18,7 +18,7 @@ import team.lodestar.lodestone.setup.LodestoneBlockTags;
 
 import java.util.ArrayList;
 
-public class StarfallSafetyHandler {
+public class StarfallSafetyManager {
     //TODO: rewrite all of this
     // a 5x5 area of chunks is scanned for invalid chunks, which have had more than 50 surface changes done by a player. If any invalid chunks are found we look somewhere else
     // we scan a pretty big area around the impact site, think like a 21x21x21 zone, cache all the non-empty blocks and do some checks on them. We also cache the amount of fluid states

@@ -63,7 +63,7 @@ public abstract class AbstractWispEntity extends Entity {
     }
 
     public void trackPastPositions() {
-        EntityHelper.trackPastPositions(pastPositions, position(), 0.01f);
+        EntityHelper.trackPastPositions(pastPositions, getCenter(), 0.01f);
         removeOldPositions(pastPositions);
     }
 
@@ -78,7 +78,9 @@ public abstract class AbstractWispEntity extends Entity {
         }
         pastPositions.removeAll(toRemove);
     }
-
+    public Vec3 getCenter() {
+        return position().add(0, getBbHeight() / 2f, 0);
+    }
 
     @Override
     public Packet<?> getAddEntityPacket() {

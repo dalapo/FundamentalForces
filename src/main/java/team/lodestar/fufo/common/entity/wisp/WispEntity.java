@@ -39,7 +39,7 @@ public class WispEntity extends AbstractWispEntity {
 
     public WispEntity(Level level, double posX, double posY, double posZ, double velX, double velY, double velZ) {
         super(FufoEntities.METEOR_FIRE_WISP.get(), level, posX, posY, posZ, velX, velY, velZ);
-        gravityCenter = new Vec3(posX+level.random.nextFloat()-0.5f, posY+2.5f+level.random.nextInt(2), posZ+level.random.nextFloat()-0.5f);
+        gravityCenter = new Vec3(posX+level.random.nextFloat()-0.5f, posY+0.75f+level.random.nextInt(2), posZ+level.random.nextFloat()-0.5f);
     }
 
     @Override
@@ -119,7 +119,7 @@ public class WispEntity extends AbstractWispEntity {
                         .setColor(startingColor, endingColor)
                         .randomMotion(0.01f)
                         .enableNoClip()
-                        .spawn(level, getX(), getY(), getZ());
+                        .spawn(level, getCenter().x, getCenter().y, getCenter().z);
             }
         }
     }

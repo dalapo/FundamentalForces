@@ -28,10 +28,10 @@ import static team.lodestar.lodestone.handlers.RenderHandler.DELAYED_RENDER;
 
 public class FallingStarfallEventRenderer extends WorldEventRenderer<FallingStarfallEvent> {
 
-    private static final ResourceLocation STAR_TRAIL = fufoPath("textures/vfx/heavy_light_trail.png");
+    public static final ResourceLocation STAR_TRAIL = fufoPath("textures/vfx/heavy_light_trail.png");
     public static final RenderType STAR_TRAIL_TYPE = LodestoneRenderTypeRegistry.ADDITIVE_TEXTURE_TRIANGLE.apply(STAR_TRAIL);
 
-    private static final ResourceLocation STAR = fufoPath("textures/vfx/star.png");
+    public static final ResourceLocation STAR = fufoPath("textures/vfx/star.png");
     public static final RenderType STAR_TYPE = LodestoneRenderTypeRegistry.ADDITIVE_TEXTURE.apply(STAR);
 
     public FallingStarfallEventRenderer() {

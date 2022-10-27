@@ -54,7 +54,7 @@ public class WispEntityRenderer extends EntityRenderer<WispEntity> {
         }
         List<Vector4f> mappedPastPositions = positions.stream().map(p -> p.position).map(p -> new Vector4f((float) p.x, (float) p.y, (float) p.z, 1)).collect(Collectors.toList());
 
-        Color color = new Color(225, 101, 245);
+        Color color = new Color(223, 92, 245);
         VFXBuilders.WorldVFXBuilder trailBuilder = VFXBuilders.createWorld().setPosColorTexLightmapDefaultFormat().setColor(color).setOffset(-x, -y, -z);
         VFXBuilders.WorldVFXBuilder builder = VFXBuilders.createWorld().setPosColorTexLightmapDefaultFormat().setColor(color);
         poseStack.pushPose();

@@ -6,7 +6,6 @@ import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import team.lodestar.fufo.client.rendering.entity.falling.FallingStarRenderer;
 import team.lodestar.fufo.common.magic.spell.PlayerSpellHandler;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
@@ -23,11 +22,6 @@ public class ClientRuntimeEvents {
                 PlayerSpellHandler.ClientOnly.clientTick(event);
             }
         }
-    }
-
-    @SubscribeEvent
-    public static void renderTick(TickEvent.RenderTickEvent event) {
-        FallingStarRenderer.renderTick(event);
     }
 
     @SubscribeEvent

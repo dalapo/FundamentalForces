@@ -1,6 +1,7 @@
 package team.lodestar.fufo.common.entity.wisp;
 
 import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.core.Registry;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -8,7 +9,9 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.registries.ForgeRegistries;
 import team.lodestar.fufo.registry.client.FufoParticles;
 import team.lodestar.fufo.registry.common.FufoEntities;
 import net.minecraft.nbt.CompoundTag;
@@ -22,6 +25,8 @@ import team.lodestar.lodestone.systems.easing.Easing;
 import team.lodestar.lodestone.systems.rendering.particle.ParticleBuilders;
 
 import java.awt.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static team.lodestar.lodestone.systems.rendering.particle.SimpleParticleOptions.Animator.WITH_AGE;
 

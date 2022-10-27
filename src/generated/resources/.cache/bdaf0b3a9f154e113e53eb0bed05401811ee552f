@@ -1,4 +1,4 @@
-// 1.19.2	2022-09-16T20:36:53.1302505	Registrate Provider for fufo [Recipes, Advancements, Loot tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), Blockstates, Item models, Lang (en_us/en_ud)]
+// 1.19.2	2022-10-27T13:28:51.0072114	Registrate Provider for fufo [Recipes, Advancements, Loot tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), Blockstates, Item models, Lang (en_us/en_ud)]
 00820f33890a6b02ba4225ccf6ab21f2988c1906 assets/fufo/blockstates/block_of_crack.json
 f9f06fd1b4c8dc447af2c8e27f55828ecba8a483 assets/fufo/blockstates/charred_gravel.json
 67c8f92326daa41be95f59b5bd1eb5a21ceb93e8 assets/fufo/blockstates/charred_stone.json
@@ -15,8 +15,8 @@ e6fd0f5c108494115593d145718286f8d7cf9ac0 assets/fufo/blockstates/petrified_log.j
 3dff9e1ec59415779195d2abfa9f07bc17b428a1 assets/fufo/blockstates/ui_test.json
 8a1fc3443adefe45a83b9f46bd833617c2bdf7f2 assets/fufo/blockstates/valve.json
 b91ab25068b3c5f8f81b4506192885d25bdf6353 assets/fufo/blockstates/volcanic_glass.json
-b087aa3b4e18c295e2a7ee302195e3ca1212ef2d assets/fufo/lang/en_ud.json
-de3c290ae073e55b73a1e6bdec5a780b947a4ae9 assets/fufo/lang/en_us.json
+c6a52b91fff285c4576bff871a9bc08e536d0698 assets/fufo/lang/en_ud.json
+726d87958dd475cfd9fb2fd38c9178f257b513e4 assets/fufo/lang/en_us.json
 9f4fe2100d47671f5f7727114d9b726c0e034046 assets/fufo/models/block/block_of_crack.json
 81f4bfccca30291d1c3b603588c23a3856c667b4 assets/fufo/models/block/charred_gravel.json
 fa02c9080ead05952513354a685377db0a994c18 assets/fufo/models/block/charred_stone.json
@@ -31,6 +31,7 @@ a7abcd0ec4fe805b92e214b4b5fe2d2337ad77b1 assets/fufo/models/block/petrified_log.
 62f34e35ad2abc1476c180572500a4c9a331c4dd assets/fufo/models/block/volcanic_glass.json
 de811e4aa9b17d267d9a21bcea7fdf1e14d78830 assets/fufo/models/item/anchor.json
 ea98f6a01bd66dda23c6b0debae18c07ab85a8e6 assets/fufo/models/item/block_of_crack.json
+32d7813daaa0a28f2347201a230bc4cbc83c8134 assets/fufo/models/item/bottled_wisp.json
 0f77382a0df40467b70a119515c2d1cef82fa825 assets/fufo/models/item/charred_gravel.json
 5d14b58f6591bdd4d3af91575c763296f6dcbdbf assets/fufo/models/item/charred_stone.json
 92651f66330085d8a28bcc22a54670cfd69553b0 assets/fufo/models/item/crack.json

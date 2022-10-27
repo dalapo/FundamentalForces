@@ -71,7 +71,7 @@ public class WispEntity extends AbstractWispEntity {
                 stack.shrink(1);
             }
             pPlayer.playSound(SoundEvents.BOTTLE_FILL, 1, 1);
-            ItemHelper.giveItemToEntity(FufoItems.CRACK.asStack(), pPlayer);
+            ItemHelper.giveItemToEntity(FufoItems.BOTTLED_WISP.asStack(), pPlayer);
             discard();
             return InteractionResult.SUCCESS;
         }

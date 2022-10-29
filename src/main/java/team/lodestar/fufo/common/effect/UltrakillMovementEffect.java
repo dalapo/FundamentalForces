@@ -2,13 +2,11 @@ package team.lodestar.fufo.common.effect;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
@@ -20,7 +18,7 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.network.PacketDistributor;
 import team.lodestar.fufo.common.capability.FufoPlayerDataCapability;
-import team.lodestar.fufo.common.packets.spell.SyncSpellCooldownPacket;
+import team.lodestar.fufo.common.magic.spell.states.DashState;
 import team.lodestar.fufo.common.packets.spell.TriggerDashJumpPacket;
 import team.lodestar.fufo.common.packets.spell.TriggerDashPacket;
 import team.lodestar.fufo.registry.common.FufoMobEffects;
@@ -43,10 +41,11 @@ public class UltrakillMovementEffect extends MobEffect {
     public static void playerTick(TickEvent.PlayerTickEvent event) {
         if (event.phase.equals(TickEvent.Phase.END)) {
             FufoPlayerDataCapability.getCapabilityOptional(event.player).ifPresent(c -> {
-                if (c.dashInstance != null) {
-                    c.dashInstance.tick(event.player);
-                    if (c.dashInstance.discarded) {
-                        c.dashInstance = null;
+                if (c.states.containsKey(DashState.DASH)) {
+                    DashState dashState = (DashState) c.states.get(DashState.DASH);
+                    dashState.tick(event.player);
+                    if (dashState.discarded) {
+                        c.states.remove(DashState.DASH);
                     }
                 }
             });
@@ -83,8 +82,8 @@ public class UltrakillMovementEffect extends MobEffect {
         float f4 = Mth.sin(player.getYRot() * ((float) Math.PI / 180F));
         float f5 = Mth.cos(player.getYRot() * ((float) Math.PI / 180F));
         Vec3 motion = new Vec3((f2 * f5 - f3 * f4), 0, (f3 * f5 + f2 * f4));
-        player.setDeltaMovement(new Vec3(0,0,0));
-        capability.dashInstance = new DashInstance(player.isOnGround(), motion);
+        player.setDeltaMovement(new Vec3(0, 0, 0));
+        capability.states.put(DashState.DASH, new DashState(player.isOnGround(), motion));
         if (player.level.isClientSide) {
             FufoPackets.INSTANCE.send(PacketDistributor.SERVER.noArg(), new TriggerDashPacket(direction));
         }
@@ -92,9 +91,10 @@ public class UltrakillMovementEffect extends MobEffect {
 
     public static boolean handleDashJump(Player player) {
         FufoPlayerDataCapability capability = FufoPlayerDataCapability.getCapability(player);
-        if (capability.dashInstance != null && player.isOnGround()) {
-            player.setDeltaMovement(player.getDeltaMovement().add(capability.dashInstance.forcedMotion.multiply(1.25f, 0, 1.25f)));
-            capability.dashInstance = null;
+        if (capability.states.containsKey(DashState.DASH) && player.isOnGround()) {
+            DashState dashState = (DashState) capability.states.get(DashState.DASH);
+            player.setDeltaMovement(player.getDeltaMovement().add(dashState.forcedMotion.multiply(1.25f, 0, 1.25f)));
+            capability.states.remove(DashState.DASH);
             if (player.level.isClientSide) {
                 FufoPackets.INSTANCE.send(PacketDistributor.SERVER.noArg(), new TriggerDashJumpPacket());
             }
@@ -112,41 +112,6 @@ public class UltrakillMovementEffect extends MobEffect {
         return super.getAttributeModifierValue(Math.min(6, amplifier), modifier);
     }
 
-    public static class DashInstance {
-        public int dashTimer = 6;
-        public final Vec3 forcedMotion;
-        public final boolean wasGrounded;
-        public boolean discarded;
-
-        public DashInstance(boolean wasGrounded, Vec3 forcedMotion) {
-            this.wasGrounded = wasGrounded;
-            this.forcedMotion = forcedMotion;
-        }
-
-        public void tick(Player player) {
-            if (wasGrounded) {
-                player.setOnGround(true);
-            }
-            if (dashTimer > 3) {
-                if (player instanceof ServerPlayer) {
-                    player.hasImpulse = true;
-                    player.resetFallDistance();
-                } else {
-                    player.move(MoverType.SELF, forcedMotion);
-                }
-            }
-            dashTimer--;
-            if (dashTimer == 0) {
-                end(player);
-            }
-        }
-
-        public void end(Player player) {
-            player.setDeltaMovement(player.getDeltaMovement().multiply(0f, 0.95f, 0f));
-            discarded = true;
-        }
-    }
-
     public static class ClientOnly {
         public static void clientTick(TickEvent.ClientTickEvent event) {
             Minecraft instance = Minecraft.getInstance();
@@ -154,7 +119,7 @@ public class UltrakillMovementEffect extends MobEffect {
             FufoPlayerDataCapability.getCapabilityOptional(player).ifPresent(c -> {
                 MobEffectInstance effectInstance = player.getEffect(FufoMobEffects.ULTRAKILL_MOVEMENT.get());
                 if (effectInstance != null) {
-                    if (instance.options.keySprint.consumeClick() && c.dashInstance == null) {
+                    if (instance.options.keySprint.consumeClick() && !c.states.containsKey(DashState.DASH)) {
                         Vec2 direction = player.input.getMoveVector();
                         if (direction.x == 0 && direction.y == 0) {
                             direction = new Vec2(1, 0);

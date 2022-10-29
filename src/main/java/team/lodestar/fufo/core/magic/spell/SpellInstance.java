@@ -65,6 +65,10 @@ public class SpellInstance {
         effect.tick(this, level, player);
     }
 
+    public final void reactToDeath(ServerPlayer player) {
+        effect.reactToDeath(this, player);
+    }
+
     public float getIconFadeout() {
         Easing easing = Easing.EXPO_IN;
         if (selected) {

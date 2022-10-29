@@ -16,6 +16,7 @@ import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import team.lodestar.fufo.FufoMod;
 import team.lodestar.fufo.common.capability.FufoPlayerDataCapability;
@@ -75,6 +76,19 @@ public class PlayerSpellHandler {
         });
     }
 
+    public static void playerDeath(LivingDeathEvent event) {
+        if (event.getEntity() instanceof ServerPlayer player) {
+            FufoPlayerDataCapability.getCapabilityOptional(player).ifPresent(c -> {
+                PlayerSpellHandler handler = c.hotbarHandler;
+                for (int i = 0; i < handler.spellStorage.spells.size(); i++) {
+                    SpellInstance instance = handler.spellStorage.spells.get(i);
+                    if (!instance.isEmpty()) {
+                        instance.reactToDeath(player);
+                    }
+                }
+            });
+        }
+    }
 
     public CompoundTag serializeNBT(CompoundTag tag) {
         CompoundTag spellTag = new CompoundTag();

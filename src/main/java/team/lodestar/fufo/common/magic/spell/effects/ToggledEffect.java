@@ -23,15 +23,21 @@ public abstract class ToggledEffect extends SpellEffect {
 
     @Override
     public void effect(SpellInstance spell, ServerPlayer player) {
-        FufoSpellDataKeys.DataKey<EffectActiveAttribute> key = FufoSpellDataKeys.EFFECT_ACTIVE_KEY;
         boolean hasSpellAttribute = isActive(spell);
         if (hasSpellAttribute) {
-            spell.attributes.removeSpellAttribute(key);
+            spell.attributes.removeSpellAttribute(FufoSpellDataKeys.EFFECT_ACTIVE_KEY);
             toggleOff(spell, player);
         } else {
-            spell.attributes.putSpellAttribute(key, new EffectActiveAttribute());
+            spell.attributes.putSpellAttribute(FufoSpellDataKeys.EFFECT_ACTIVE_KEY, new EffectActiveAttribute());
             toggleOn(spell, player);
         }
+        player.swing(InteractionHand.MAIN_HAND, true);
+    }
+
+    @Override
+    public void reactToDeath(SpellInstance spell, ServerPlayer player) {
+        spell.attributes.removeSpellAttribute(FufoSpellDataKeys.EFFECT_ACTIVE_KEY);
+        toggleOff(spell, player);
     }
 
     public boolean isActive(SpellInstance spell) {

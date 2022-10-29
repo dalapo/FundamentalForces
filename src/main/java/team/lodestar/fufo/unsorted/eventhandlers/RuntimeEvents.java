@@ -7,6 +7,7 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
@@ -41,10 +42,14 @@ public class RuntimeEvents {
     }
 
     @SubscribeEvent
+    public static void entityDeath(LivingDeathEvent event) {
+        PlayerSpellHandler.playerDeath(event);
+    }
+
+    @SubscribeEvent
     public static void playerClone(PlayerEvent.Clone event) {
         FufoPlayerDataCapability.playerClone(event);
     }
-
     @SubscribeEvent
     public static void playerTick(TickEvent.PlayerTickEvent event) {
         PlayerSpellHandler.playerTick(event);

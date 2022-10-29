@@ -27,6 +27,11 @@ public abstract class SpellEffect {
 
     }
 
+
+    public void reactToDeath(SpellInstance spell, ServerPlayer player) {
+
+    }
+
     public void cast(SpellInstance spell, ServerPlayer player) {
         if (canCast(spell, player)) {
             effect(spell, player);

@@ -129,13 +129,12 @@ public class SpellInstance {
         }
         CompoundTag attributes = tag.getCompound("attributes");
         for (String path : attributes.getAllKeys()) {
-            ResourceLocation key = new ResourceLocation(path);
-            FufoSpellDataKeys.SpellDataKey<? extends SpellAttribute> spellDataKey = FufoSpellDataKeys.DATA_KEYS.get(key);
+            FufoSpellDataKeys.SpellDataKey<? extends SpellAttribute> spellDataKey = FufoSpellDataKeys.DATA_KEYS.get(new ResourceLocation(path));
             if (spellDataKey == null) {
                 return EMPTY;
             }
             SpellAttribute attribute = spellDataKey.serializer.apply(attributes.getCompound(path));
-            spellInstance.attributes.put(key, attribute);
+            spellInstance.attributes.put(spellDataKey, attribute);
         }
         return spellInstance;
     }

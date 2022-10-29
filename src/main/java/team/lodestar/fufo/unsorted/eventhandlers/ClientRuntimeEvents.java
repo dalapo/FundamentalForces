@@ -14,13 +14,15 @@ public class ClientRuntimeEvents {
 
     @SubscribeEvent
     public static void clientTick(TickEvent.ClientTickEvent event) {
-        if (event.phase.equals(TickEvent.Phase.END)) {
-            Minecraft minecraft = Minecraft.getInstance();
-            if (minecraft.level != null) {
-                if (minecraft.isPaused()) {
-                    return;
-                }
+        Minecraft minecraft = Minecraft.getInstance();
+        if (minecraft.level != null) {
+            if (minecraft.isPaused()) {
+                return;
+            }
+            if (event.phase.equals(TickEvent.Phase.END)) {
                 PlayerSpellHandler.ClientOnly.clientTick(event);
+            }
+            else {
                 UltrakillMovementEffect.ClientOnly.clientTick(event);
             }
         }

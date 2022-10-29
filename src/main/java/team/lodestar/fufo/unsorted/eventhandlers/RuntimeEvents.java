@@ -67,6 +67,7 @@ public class RuntimeEvents {
     @SubscribeEvent
     public static void playerTick(TickEvent.PlayerTickEvent event) {
         PlayerSpellHandler.playerTick(event);
+        UltrakillMovementEffect.playerTick(event);
     }
 
     @SubscribeEvent

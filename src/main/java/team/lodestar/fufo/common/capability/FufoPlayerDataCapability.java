@@ -15,6 +15,7 @@ import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.network.PacketDistributor;
 import team.lodestar.fufo.FufoMod;
+import team.lodestar.fufo.common.effect.UltrakillMovementEffect;
 import team.lodestar.fufo.common.magic.spell.PlayerSpellHandler;
 import team.lodestar.fufo.common.packets.FufoPlayerCapabilitySyncPacket;
 import team.lodestar.fufo.common.fluid.PipeBuilderAssistant;
@@ -37,7 +38,7 @@ public class FufoPlayerDataCapability implements LodestoneCapability {
     public PlayerSpellHandler hotbarHandler = new PlayerSpellHandler(new SpellStorage(9));
     public PipeBuilderAssistant pipeHandler = new PipeBuilderAssistant();
     public ProgressionHandler progressHandler = new ProgressionHandler();
-
+    public UltrakillMovementEffect.DashInstance dashInstance;
     public FufoPlayerDataCapability() {
     }
 

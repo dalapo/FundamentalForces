@@ -14,7 +14,6 @@ import static team.lodestar.fufo.FufoMod.fufoPath;
 public class FufoSpellDataKeys {
     public static final Map<ResourceLocation, DataKey<? extends SpellAttribute>> DATA_KEYS = new HashMap<>();
 
-
     public static final DataKey<EffectActiveAttribute> EFFECT_ACTIVE_KEY = registerDataKey(fufoPath("active"), EffectActiveAttribute.class, EffectActiveAttribute::deserializeNBT);
 
     public static final DataKey<CooldownAttribute> COOLDOWN_KEY = registerDataKey(fufoPath("cooldown"), CooldownAttribute.class, CooldownAttribute::deserializeNBT);

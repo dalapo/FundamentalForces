@@ -5,8 +5,10 @@
   "refmap": "fufo.refmap.json",
   "mixins": [
     "BaseFireBlockMixin",
+    "EntityMixin",
     "FlintAndSteelMixin",
-    "InventoryMixin"
+    "InventoryMixin",
+    "LocalPlayerMixin"
   ],
   "client": [
     "GuiMixin",

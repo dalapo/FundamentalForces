@@ -14,6 +14,7 @@ import team.lodestar.fufo.common.magic.spell.effects.ProjectileEffect;
 import team.lodestar.fufo.common.magic.spell.effects.ToggledPotionSpellEffect;
 import team.lodestar.fufo.core.magic.spell.*;
 import team.lodestar.fufo.registry.common.FufoBlocks;
+import team.lodestar.fufo.registry.common.FufoMobEffects;
 
 import java.util.HashMap;
 import java.util.function.Function;
@@ -39,13 +40,23 @@ public class FufoSpellTypes {
 
     public static final SpellType HASTE_SPELL = registerSpellHolder(new SpellType(FufoMod.fufoPath("haste_spell"),
             defaultSpellInstance(FufoSpellCastModes.INSTANT,
-                    new CooldownAttribute(20)
+                    new CooldownAttribute(10)
             ),
             new ToggledPotionSpellEffect(()-> {
                 MobEffectInstance mobEffectInstance = new MobEffectInstance(MobEffects.DIG_SPEED, 100000, 1);
                 mobEffectInstance.setNoCounter(true);
                 return mobEffectInstance;
             }, FufoMagicElements.FIRE)));
+
+    public static final SpellType MOVEMENT_SPELL = registerSpellHolder(new SpellType(FufoMod.fufoPath("movement_spell"),
+            defaultSpellInstance(FufoSpellCastModes.INSTANT,
+                    new CooldownAttribute(10)
+            ),
+            new ToggledPotionSpellEffect(()-> {
+                MobEffectInstance mobEffectInstance = new MobEffectInstance(FufoMobEffects.ULTRAKILL_MOVEMENT.get(), 100000, 1);
+                mobEffectInstance.setNoCounter(true);
+                return mobEffectInstance;
+            }, FufoMagicElements.AIR)));
 
     public static SpellType registerSpellHolder(SpellType spellType) {
         SPELL_TYPES.put(spellType.id, spellType);

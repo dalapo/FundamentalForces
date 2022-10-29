@@ -84,7 +84,7 @@ public class UltrakillMovementEffect extends MobEffect {
         float f5 = Mth.cos(player.getYRot() * ((float) Math.PI / 180F));
         Vec3 motion = new Vec3((f2 * f5 - f3 * f4), 0, (f3 * f5 + f2 * f4));
         player.setDeltaMovement(new Vec3(0,0,0));
-        capability.dashInstance = new DashInstance(motion);
+        capability.dashInstance = new DashInstance(player.isOnGround(), motion);
         if (player.level.isClientSide) {
             FufoPackets.INSTANCE.send(PacketDistributor.SERVER.noArg(), new TriggerDashPacket(direction));
         }
@@ -115,13 +115,18 @@ public class UltrakillMovementEffect extends MobEffect {
     public static class DashInstance {
         public int dashTimer = 5;
         public final Vec3 forcedMotion;
+        public final boolean wasGrounded;
         public boolean discarded;
 
-        public DashInstance(Vec3 forcedMotion) {
+        public DashInstance(boolean wasGrounded, Vec3 forcedMotion) {
+            this.wasGrounded = wasGrounded;
             this.forcedMotion = forcedMotion;
         }
 
         public void tick(Player player) {
+            if (wasGrounded) {
+                player.setOnGround(true);
+            }
             if (dashTimer > 2) {
                 if (player instanceof ServerPlayer) {
                     player.hasImpulse = true;

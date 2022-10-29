@@ -113,7 +113,7 @@ public class UltrakillMovementEffect extends MobEffect {
     }
 
     public static class DashInstance {
-        public int dashTimer = 5;
+        public int dashTimer = 6;
         public final Vec3 forcedMotion;
         public final boolean wasGrounded;
         public boolean discarded;
@@ -127,7 +127,7 @@ public class UltrakillMovementEffect extends MobEffect {
             if (wasGrounded) {
                 player.setOnGround(true);
             }
-            if (dashTimer > 2) {
+            if (dashTimer > 3) {
                 if (player instanceof ServerPlayer) {
                     player.hasImpulse = true;
                     player.resetFallDistance();
@@ -142,6 +142,7 @@ public class UltrakillMovementEffect extends MobEffect {
         }
 
         public void end(Player player) {
+            player.setDeltaMovement(player.getDeltaMovement().multiply(0f, 0.95f, 0f));
             discarded = true;
         }
     }
@@ -155,6 +156,9 @@ public class UltrakillMovementEffect extends MobEffect {
                 if (effectInstance != null) {
                     if (instance.options.keySprint.consumeClick() && c.dashInstance == null) {
                         Vec2 direction = player.input.getMoveVector();
+                        if (direction.x == 0 && direction.y == 0) {
+                            direction = new Vec2(1, 0);
+                        }
                         handleDash(player, direction);
                     }
                 }

@@ -10,19 +10,15 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
-public class PlaceSpellEffect extends SpellEffect {
+public class PlaceBlockSpellEffect extends SpellEffect {
     BlockEntry<?> entry;
-    public PlaceSpellEffect(BlockEntry<?> entry, MagicElementType element){
+    public PlaceBlockSpellEffect(BlockEntry<?> entry, MagicElementType element){
         super(CastLogicHandler.ONLY_BLOCK, element);
         this.entry = entry;
     }
-    @Override
-    public void effect(SpellInstance spell, ServerPlayer player) {
-
-    }
 
     @Override
-    public void effect(SpellInstance spell, ServerPlayer player, BlockHitResult result) {
+    public void blockEffect(SpellInstance spell, ServerPlayer player, BlockHitResult result) {
         BlockState state = entry.getDefaultState();
         Level level = player.level;
         BlockPos pos = result.getBlockPos();

@@ -1,8 +1,6 @@
 package team.lodestar.fufo.common.magic.spell.effects;
 
 import team.lodestar.fufo.common.entity.magic.spell.AbstractSpellProjectile;
-import team.lodestar.fufo.common.magic.spell.datas.LifespanAttribute;
-import team.lodestar.fufo.common.magic.spell.datas.DamageAttribute;
 import team.lodestar.fufo.core.magic.MagicElementType;
 import team.lodestar.fufo.core.magic.spell.SpellEffect;
 import team.lodestar.fufo.core.magic.spell.SpellInstance;
@@ -40,7 +38,4 @@ public class ProjectileEffect extends SpellEffect {
         player.level.addFreshEntity(projectile);
         player.swing(InteractionHand.MAIN_HAND, true);
     }
-
-    @Override
-    public void effect(SpellInstance spell, ServerPlayer player, BlockHitResult result) {}
 }

@@ -1,7 +1,7 @@
 package team.lodestar.fufo.core.magic.spell;
 
 import team.lodestar.fufo.common.capability.FufoPlayerDataCapability;
-import team.lodestar.fufo.common.magic.spell.datas.SpellAttributeMap;
+import team.lodestar.fufo.common.magic.spell.attributes.SpellAttributeMap;
 import team.lodestar.fufo.common.packets.spell.SyncSpellCooldownPacket;
 import team.lodestar.fufo.registry.common.magic.FufoSpellDataKeys;
 import team.lodestar.fufo.registry.common.magic.FufoSpellTypes;
@@ -52,10 +52,7 @@ public class SpellInstance {
         }
     }
 
-    public void tick(Level level) {
-    }
-
-    public final void baseTick(Level level) {
+    public final void tick(Level level, @Nullable ServerPlayer player) {
         if (isOnCooldown()) {
             cooldown.tick();
         }
@@ -65,10 +62,7 @@ public class SpellInstance {
         } else if (selectedFadeAnimation > 0) {
             selectedFadeAnimation -= 0.5f;
         }
-        tick(level);
-    }
-
-    public void playerTick(ServerPlayer player) {
+        effect.tick(this, level, player);
     }
 
     public float getIconFadeout() {

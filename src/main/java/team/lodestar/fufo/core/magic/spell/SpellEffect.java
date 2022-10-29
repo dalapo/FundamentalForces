@@ -1,8 +1,11 @@
 package team.lodestar.fufo.core.magic.spell;
 
+import net.minecraft.world.level.Level;
 import team.lodestar.fufo.core.magic.MagicElementType;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.BlockHitResult;
+
+import javax.annotation.Nullable;
 
 public abstract class SpellEffect {
 
@@ -20,6 +23,10 @@ public abstract class SpellEffect {
         this.element = element;
     }
 
+    public void tick(SpellInstance spell, Level level, @Nullable ServerPlayer player) {
+
+    }
+
     public void cast(SpellInstance spell, ServerPlayer player) {
         if (canCast(spell, player)) {
             effect(spell, player);
@@ -28,13 +35,15 @@ public abstract class SpellEffect {
 
     public void cast(SpellInstance spell, ServerPlayer player, BlockHitResult result) {
         if (canCast(spell, player)) {
-            effect(spell, player, result);
+            blockEffect(spell, player, result);
         }
     }
 
-    public abstract void effect(SpellInstance spell, ServerPlayer player, BlockHitResult result);
+    public void blockEffect(SpellInstance spell, ServerPlayer player, BlockHitResult result) {
+    }
 
-    public abstract void effect(SpellInstance spell, ServerPlayer player);
+    public void effect(SpellInstance spell, ServerPlayer player) {
+    }
 
     public boolean canCast(SpellInstance spell, ServerPlayer player) {
         boolean isOnCooldown = spell.isOnCooldown();

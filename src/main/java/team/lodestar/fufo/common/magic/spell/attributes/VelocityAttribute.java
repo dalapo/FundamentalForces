@@ -1,4 +1,4 @@
-package team.lodestar.fufo.common.magic.spell.datas;
+package team.lodestar.fufo.common.magic.spell.attributes;
 
 import net.minecraft.nbt.CompoundTag;
 import team.lodestar.fufo.core.magic.spell.SpellAttribute;

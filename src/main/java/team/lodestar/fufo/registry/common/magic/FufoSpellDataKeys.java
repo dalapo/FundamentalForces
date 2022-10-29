@@ -2,10 +2,7 @@ package team.lodestar.fufo.registry.common.magic;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import team.lodestar.fufo.common.magic.spell.datas.DamageAttribute;
-import team.lodestar.fufo.common.magic.spell.datas.LifespanAttribute;
-import team.lodestar.fufo.common.magic.spell.datas.CooldownAttribute;
-import team.lodestar.fufo.common.magic.spell.datas.VelocityAttribute;
+import team.lodestar.fufo.common.magic.spell.attributes.*;
 import team.lodestar.fufo.core.magic.spell.SpellAttribute;
 
 import java.util.HashMap;
@@ -16,6 +13,9 @@ import static team.lodestar.fufo.FufoMod.fufoPath;
 
 public class FufoSpellDataKeys {
     public static final Map<ResourceLocation, DataKey<? extends SpellAttribute>> DATA_KEYS = new HashMap<>();
+
+
+    public static final DataKey<EffectActiveAttribute> EFFECT_ACTIVE_KEY = registerDataKey(fufoPath("active"), EffectActiveAttribute.class, EffectActiveAttribute::deserializeNBT);
 
     public static final DataKey<CooldownAttribute> COOLDOWN_KEY = registerDataKey(fufoPath("cooldown"), CooldownAttribute.class, CooldownAttribute::deserializeNBT);
     public static final DataKey<LifespanAttribute> LIFESPAN_KEY = registerDataKey(fufoPath("lifespan"), LifespanAttribute.class, LifespanAttribute::deserializeNBT);

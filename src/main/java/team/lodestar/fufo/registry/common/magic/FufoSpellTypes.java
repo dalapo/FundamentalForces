@@ -1,14 +1,17 @@
 package team.lodestar.fufo.registry.common.magic;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import team.lodestar.fufo.FufoMod;
 import team.lodestar.fufo.common.entity.magic.spell.tier1.SpellBolt;
-import team.lodestar.fufo.common.magic.spell.datas.DamageAttribute;
-import team.lodestar.fufo.common.magic.spell.datas.LifespanAttribute;
-import team.lodestar.fufo.common.magic.spell.datas.CooldownAttribute;
-import team.lodestar.fufo.common.magic.spell.datas.VelocityAttribute;
-import team.lodestar.fufo.common.magic.spell.effects.PlaceSpellEffect;
+import team.lodestar.fufo.common.magic.spell.attributes.DamageAttribute;
+import team.lodestar.fufo.common.magic.spell.attributes.LifespanAttribute;
+import team.lodestar.fufo.common.magic.spell.attributes.CooldownAttribute;
+import team.lodestar.fufo.common.magic.spell.attributes.VelocityAttribute;
+import team.lodestar.fufo.common.magic.spell.effects.PlaceBlockSpellEffect;
 import team.lodestar.fufo.common.magic.spell.effects.ProjectileEffect;
+import team.lodestar.fufo.common.magic.spell.effects.ToggledPotionSpellEffect;
 import team.lodestar.fufo.core.magic.spell.*;
 import team.lodestar.fufo.registry.common.FufoBlocks;
 
@@ -31,7 +34,18 @@ public class FufoSpellTypes {
 
     public static final SpellType FORCE_ORB = registerSpellHolder(new SpellType(FufoMod.fufoPath("force_orb"),
             defaultSpellInstance(FufoSpellCastModes.INSTANT),
-            new PlaceSpellEffect(FufoBlocks.FORCE_ORB, FufoMagicElements.FORCE)));
+            new PlaceBlockSpellEffect(FufoBlocks.FORCE_ORB, FufoMagicElements.FORCE)));
+
+
+    public static final SpellType HASTE_SPELL = registerSpellHolder(new SpellType(FufoMod.fufoPath("haste_spell"),
+            defaultSpellInstance(FufoSpellCastModes.INSTANT,
+                    new CooldownAttribute(20)
+            ),
+            new ToggledPotionSpellEffect(()-> {
+                MobEffectInstance mobEffectInstance = new MobEffectInstance(MobEffects.DIG_SPEED, 100000, 1);
+                mobEffectInstance.setNoCounter(true);
+                return mobEffectInstance;
+            }, FufoMagicElements.FIRE)));
 
     public static SpellType registerSpellHolder(SpellType spellType) {
         SPELL_TYPES.put(spellType.id, spellType);

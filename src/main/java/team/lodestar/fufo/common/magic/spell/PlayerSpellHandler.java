@@ -61,10 +61,7 @@ public class PlayerSpellHandler {
                 SpellInstance instance = handler.spellStorage.spells.get(i);
                 instance.selected = i == selected;
                 if (!instance.isEmpty()) {
-                    instance.baseTick(player.level);
-                    if (player instanceof ServerPlayer serverPlayer) {
-                        instance.playerTick(serverPlayer);
-                    }
+                    instance.tick(player.level, (player instanceof ServerPlayer serverPlayer) ? serverPlayer : null);
                 }
             }
             if (event.player instanceof ServerPlayer serverPlayer) {

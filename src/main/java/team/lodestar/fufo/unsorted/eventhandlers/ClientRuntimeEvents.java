@@ -6,6 +6,7 @@ import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import team.lodestar.fufo.common.effect.UltrakillMovementEffect;
 import team.lodestar.fufo.common.magic.spell.PlayerSpellHandler;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
@@ -20,6 +21,7 @@ public class ClientRuntimeEvents {
                     return;
                 }
                 PlayerSpellHandler.ClientOnly.clientTick(event);
+                UltrakillMovementEffect.ClientOnly.clientTick(event);
             }
         }
     }

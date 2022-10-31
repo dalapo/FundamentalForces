@@ -7,6 +7,7 @@ import team.lodestar.fufo.core.magic.spell.SpellAttribute;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
 import static team.lodestar.fufo.FufoMod.fufoPath;
@@ -31,10 +32,40 @@ public class FufoSpellDataKeys {
         public final ResourceLocation id;
         public final Class<T> classType;
         public final Function<CompoundTag, T> serializer;
+
         public SpellDataKey(ResourceLocation id, Class<T> classType, Function<CompoundTag, T> serializer) {
             this.id = id;
             this.classType = classType;
             this.serializer = serializer;
         }
+
+        @SuppressWarnings("unchecked")
+        public void putAttribute(SpellAttributeMap<SpellAttribute> spellAttributeMap, SpellAttribute attribute) {
+            spellAttributeMap.put((SpellDataKey<SpellAttribute>) this, attribute);
+        }
+
+        public T getAttribute(SpellAttributeMap<?> spellAttributeMap) {
+            return classType.cast(spellAttributeMap.get(this));
+        }
+
+        public boolean hasAttribute(SpellAttributeMap<?> spellAttributeMap) {
+            return spellAttributeMap.containsKey(this);
+        }
+
+        @SuppressWarnings("unchecked")
+        public void removeAttribute(SpellAttributeMap<SpellAttribute> spellAttributeMap) {
+            spellAttributeMap.remove((SpellDataKey<SpellAttribute>) this);
+        }
+
+        public Optional<T> getOptionalAttribute(SpellAttributeMap<?> spellAttributeMap) {
+            return Optional.of(classType.cast(spellAttributeMap.get(this)));
+        }
+
+        public T getMandatoryAttribute(SpellAttributeMap<?> spellAttributeMap) {
+            return getOptionalAttribute(spellAttributeMap).orElseThrow(() -> new RuntimeException("Spell Effect is missing mandatory attributes, this is very bad."));
+        }
+    }
+
+    public static class SpellAttributeMap<T extends SpellAttribute> extends HashMap<FufoSpellDataKeys.SpellDataKey<T>, T> {
     }
 }

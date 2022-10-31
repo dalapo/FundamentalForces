@@ -24,8 +24,8 @@ public class ProjectileEffect extends SpellEffect {
     }
     @Override
     public void effect(SpellInstance spell, ServerPlayer player) {
-        int lifespan = spell.attributes.getMandatorySpellAttribute(FufoSpellDataKeys.LIFESPAN_KEY).lifespan;
-        float velocity = spell.attributes.getMandatorySpellAttribute(FufoSpellDataKeys.VELOCITY_KEY).velocity;
+        int lifespan = FufoSpellDataKeys.LIFESPAN_KEY.getMandatoryAttribute(spell.attributes).lifespan;
+        float velocity = FufoSpellDataKeys.VELOCITY_KEY.getMandatoryAttribute(spell.attributes).velocity;
         AbstractSpellProjectile projectile = projectileSupplier.apply(player.level)
                 .setElement(element)
                 .setColor(firstColor, secondColor)

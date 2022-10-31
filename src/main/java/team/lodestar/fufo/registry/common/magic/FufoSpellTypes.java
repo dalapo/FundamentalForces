@@ -37,7 +37,6 @@ public class FufoSpellTypes {
             defaultSpellInstance(FufoSpellCastModes.INSTANT),
             new PlaceBlockSpellEffect(FufoBlocks.FORCE_ORB, FufoMagicElements.FORCE)));
 
-
     public static final SpellType HASTE_SPELL = registerSpellHolder(new SpellType(FufoMod.fufoPath("haste_spell"),
             defaultSpellInstance(FufoSpellCastModes.INSTANT,
                     new CooldownAttribute(10)
@@ -70,8 +69,8 @@ public class FufoSpellTypes {
     public static Function<SpellType, SpellInstance> defaultSpellInstance(SpellCastMode mode, SpellAttribute... attributes) {
         return (type) -> {
             SpellInstance spellInstance = new SpellInstance(type, mode);
-            for (SpellAttribute data : attributes) {
-                spellInstance.attributes.put(data.id, data);
+            for (SpellAttribute attribute : attributes) {
+                FufoSpellDataKeys.DATA_KEYS.get(attribute.id).putAttribute(spellInstance.attributes, attribute);
             }
             return spellInstance;
         };

@@ -1,9 +1,9 @@
 package team.lodestar.fufo.core.magic.spell;
 
 import team.lodestar.fufo.common.capability.FufoPlayerDataCapability;
-import team.lodestar.fufo.common.magic.spell.attributes.SpellAttributeMap;
 import team.lodestar.fufo.common.packets.spell.SyncSpellCooldownPacket;
 import team.lodestar.fufo.registry.common.magic.FufoSpellDataKeys;
+import team.lodestar.fufo.registry.common.magic.FufoSpellDataKeys.SpellAttributeMap;
 import team.lodestar.fufo.registry.common.magic.FufoSpellTypes;
 import team.lodestar.lodestone.systems.easing.Easing;
 import net.minecraft.core.BlockPos;
@@ -28,7 +28,7 @@ public class SpellInstance {
     public float selectedFadeAnimation;
     public SpellCastMode castMode;
     public SpellEffect effect;
-    public final SpellAttributeMap attributes = new SpellAttributeMap();
+    public final SpellAttributeMap<SpellAttribute> attributes = new SpellAttributeMap<>();
 
     public SpellInstance(SpellType spellType, SpellCastMode castMode) {
         this.spellType = spellType;
@@ -89,7 +89,7 @@ public class SpellInstance {
     }
 
     public void setDefaultCooldown(ServerPlayer player) {
-        attributes.getSpellAttribute(FufoSpellDataKeys.COOLDOWN_KEY).ifPresent(d -> {
+        FufoSpellDataKeys.COOLDOWN_KEY.getOptionalAttribute(attributes).ifPresent(d -> {
             setCooldown(new SpellCooldown(d.duration), player);
         });
     }
@@ -134,7 +134,7 @@ public class SpellInstance {
                 return EMPTY;
             }
             SpellAttribute attribute = spellDataKey.serializer.apply(attributes.getCompound(path));
-            spellInstance.attributes.put(spellDataKey, attribute);
+            spellDataKey.putAttribute(spellInstance.attributes, spellDataKey.classType.cast(attribute));
         }
         return spellInstance;
     }

@@ -23,6 +23,7 @@ import team.lodestar.fufo.common.packets.spell.TriggerDashJumpPacket;
 import team.lodestar.fufo.common.packets.spell.TriggerDashPacket;
 import team.lodestar.fufo.registry.common.FufoMobEffects;
 import team.lodestar.fufo.registry.common.FufoPackets;
+import team.lodestar.fufo.registry.common.FufoSounds;
 import team.lodestar.lodestone.helpers.ColorHelper;
 
 import java.awt.*;
@@ -84,6 +85,7 @@ public class UltrakillMovementEffect extends MobEffect {
         Vec3 motion = new Vec3((f2 * f5 - f3 * f4), 0, (f3 * f5 + f2 * f4));
         player.setDeltaMovement(new Vec3(0, 0, 0));
         capability.states.put(DashState.DASH, new DashState(player.isOnGround(), motion));
+        player.playSound(FufoSounds.DASH.get());
         if (player.level.isClientSide) {
             FufoPackets.INSTANCE.send(PacketDistributor.SERVER.noArg(), new TriggerDashPacket(direction));
         }
@@ -119,10 +121,13 @@ public class UltrakillMovementEffect extends MobEffect {
             FufoPlayerDataCapability.getCapabilityOptional(player).ifPresent(c -> {
                 MobEffectInstance effectInstance = player.getEffect(FufoMobEffects.ULTRAKILL_MOVEMENT.get());
                 if (effectInstance != null) {
-                    if (instance.options.keySprint.consumeClick() && !c.states.containsKey(DashState.DASH)) {
+                    if (c.states.containsKey(DashState.DASH) && ((DashState)c.states.get(DashState.DASH)).isActive()) {
+                        return;
+                    }
+                    if (instance.options.keySprint.consumeClick()) {
                         Vec2 direction = player.input.getMoveVector();
                         if (direction.x == 0 && direction.y == 0) {
-                            direction = new Vec2(1, 0);
+                            direction = new Vec2(0, 1);
                         }
                         handleDash(player, direction);
                     }

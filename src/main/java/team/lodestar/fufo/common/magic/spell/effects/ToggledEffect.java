@@ -25,10 +25,10 @@ public abstract class ToggledEffect extends SpellEffect {
     public void effect(SpellInstance spell, ServerPlayer player) {
         boolean hasSpellAttribute = isActive(spell);
         if (hasSpellAttribute) {
-            spell.attributes.removeSpellAttribute(FufoSpellDataKeys.EFFECT_ACTIVE_KEY);
+            FufoSpellDataKeys.EFFECT_ACTIVE_KEY.removeAttribute(spell.attributes);
             toggleOff(spell, player);
         } else {
-            spell.attributes.putSpellAttribute(FufoSpellDataKeys.EFFECT_ACTIVE_KEY, new EffectActiveAttribute());
+            FufoSpellDataKeys.EFFECT_ACTIVE_KEY.putAttribute(spell.attributes, new EffectActiveAttribute());
             toggleOn(spell, player);
         }
         player.swing(InteractionHand.MAIN_HAND, true);
@@ -36,12 +36,12 @@ public abstract class ToggledEffect extends SpellEffect {
 
     @Override
     public void reactToDeath(SpellInstance spell, ServerPlayer player) {
-        spell.attributes.removeSpellAttribute(FufoSpellDataKeys.EFFECT_ACTIVE_KEY);
+        FufoSpellDataKeys.EFFECT_ACTIVE_KEY.removeAttribute(spell.attributes);
         toggleOff(spell, player);
     }
 
     public boolean isActive(SpellInstance spell) {
-        return spell.attributes.hasSpellAttribute(FufoSpellDataKeys.EFFECT_ACTIVE_KEY);
+        return FufoSpellDataKeys.EFFECT_ACTIVE_KEY.hasAttribute(spell.attributes);
     }
 
     public abstract void toggleOn(SpellInstance spell, ServerPlayer player);

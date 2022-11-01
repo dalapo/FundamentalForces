@@ -10,8 +10,8 @@ import team.lodestar.fufo.FufoMod;
 public class DashState implements FufoPlayerState {
     public static final ResourceLocation DASH = FufoMod.fufoPath("dash");
 
-    public static final int INITIAL_STATE_LIFETIME = 5;
-    public static final int DASH_DURATION = 2;
+    public static final int INITIAL_STATE_LIFETIME = 8;
+    public static final int DASH_DURATION = 3;
 
     public int stateLifetime = INITIAL_STATE_LIFETIME;
     public final Vec3 forcedMotion;

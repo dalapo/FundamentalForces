@@ -122,7 +122,11 @@ public class SpellInstance {
     }
 
     public static SpellInstance deserializeNBT(CompoundTag tag) {
-        SpellInstance spellInstance = new SpellInstance(FufoSpellTypes.SPELL_TYPES.get(new ResourceLocation(tag.getString("type"))),
+        SpellType type = FufoSpellTypes.SPELL_TYPES.get(new ResourceLocation(tag.getString("type")));
+        if (type == null) {
+            return EMPTY;
+        }
+        SpellInstance spellInstance = new SpellInstance(type,
                 SpellCastMode.deserializeNBT(tag.getCompound("castMode")));
         if (tag.contains("spellCooldown")) {
             spellInstance.cooldown = SpellCooldown.deserializeNBT(tag.getCompound("spellCooldown"));

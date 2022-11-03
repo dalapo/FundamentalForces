@@ -28,6 +28,8 @@ import team.lodestar.lodestone.helpers.ColorHelper;
 
 import java.awt.*;
 
+import static team.lodestar.fufo.registry.common.magic.FufoPlayerStateKeys.DASH;
+
 public class UltrakillMovementEffect extends MobEffect {
     public UltrakillMovementEffect() {
         super(MobEffectCategory.BENEFICIAL, ColorHelper.getColor(new Color(75, 243, 218)));
@@ -42,11 +44,11 @@ public class UltrakillMovementEffect extends MobEffect {
     public static void playerTick(TickEvent.PlayerTickEvent event) {
         if (event.phase.equals(TickEvent.Phase.END)) {
             FufoPlayerDataCapability.getCapabilityOptional(event.player).ifPresent(c -> {
-                if (c.states.containsKey(DashState.DASH)) {
-                    DashState dashState = (DashState) c.states.get(DashState.DASH);
+                if (DASH.isInState(c.states)) {
+                    DashState dashState = DASH.getState(c.states);
                     dashState.tick(event.player);
                     if (dashState.discarded) {
-                        c.states.remove(DashState.DASH);
+                        c.states.remove(DASH);
                     }
                 }
             });
@@ -84,7 +86,7 @@ public class UltrakillMovementEffect extends MobEffect {
         float f5 = Mth.cos(player.getYRot() * ((float) Math.PI / 180F));
         Vec3 motion = new Vec3((f2 * f5 - f3 * f4), 0, (f3 * f5 + f2 * f4));
         player.setDeltaMovement(new Vec3(0, 0, 0));
-        capability.states.put(DashState.DASH, new DashState(player.isOnGround(), motion));
+        DASH.putState(capability.states, new DashState(player.isOnGround(), motion));
         player.playSound(FufoSounds.DASH.get());
         if (player.level.isClientSide) {
             FufoPackets.INSTANCE.send(PacketDistributor.SERVER.noArg(), new TriggerDashPacket(direction));
@@ -93,10 +95,10 @@ public class UltrakillMovementEffect extends MobEffect {
 
     public static boolean handleDashJump(Player player) {
         FufoPlayerDataCapability capability = FufoPlayerDataCapability.getCapability(player);
-        if (capability.states.containsKey(DashState.DASH) && player.isOnGround()) {
-            DashState dashState = (DashState) capability.states.get(DashState.DASH);
+        if (DASH.isInState(capability.states) && player.isOnGround()) {
+            DashState dashState = DASH.getState(capability.states);
             player.setDeltaMovement(player.getDeltaMovement().add(dashState.forcedMotion.multiply(1.25f, 0, 1.25f)));
-            capability.states.remove(DashState.DASH);
+            DASH.removeState(capability.states);
             if (player.level.isClientSide) {
                 FufoPackets.INSTANCE.send(PacketDistributor.SERVER.noArg(), new TriggerDashJumpPacket());
             }
@@ -121,7 +123,7 @@ public class UltrakillMovementEffect extends MobEffect {
             FufoPlayerDataCapability.getCapabilityOptional(player).ifPresent(c -> {
                 MobEffectInstance effectInstance = player.getEffect(FufoMobEffects.ULTRAKILL_MOVEMENT.get());
                 if (effectInstance != null) {
-                    if (c.states.containsKey(DashState.DASH) && ((DashState)c.states.get(DashState.DASH)).isActive()) {
+                    if (DASH.isInState(c.states) && DASH.getState(c.states).isActive()) {
                         return;
                     }
                     if (instance.options.keySprint.consumeClick()) {

@@ -20,8 +20,9 @@ import team.lodestar.fufo.common.magic.spell.PlayerSpellHandler;
 import team.lodestar.fufo.common.packets.FufoPlayerCapabilitySyncPacket;
 import team.lodestar.fufo.common.fluid.PipeBuilderAssistant;
 import team.lodestar.fufo.common.magic.spell.SpellStorage;
-import team.lodestar.fufo.common.magic.spell.states.FufoPlayerState;
 import team.lodestar.fufo.registry.common.FufoPackets;
+import team.lodestar.fufo.registry.common.magic.FufoPlayerStateKeys;
+import team.lodestar.fufo.registry.common.magic.FufoPlayerStateKeys.FufoPlayerState;
 import team.lodestar.fufo.unsorted.handlers.ProgressionHandler;
 import team.lodestar.lodestone.helpers.NBTHelper;
 import team.lodestar.lodestone.systems.capability.LodestoneCapability;
@@ -41,7 +42,7 @@ public class FufoPlayerDataCapability implements LodestoneCapability {
     public PlayerSpellHandler hotbarHandler = new PlayerSpellHandler(new SpellStorage(9));
     public PipeBuilderAssistant pipeHandler = new PipeBuilderAssistant();
     public ProgressionHandler progressHandler = new ProgressionHandler();
-    public HashMap<ResourceLocation, FufoPlayerState> states = new HashMap<>();
+    public FufoPlayerStateKeys.PlayerStateMap<FufoPlayerState> states = new FufoPlayerStateKeys.PlayerStateMap<>();
     public FufoPlayerDataCapability() {
     }
 

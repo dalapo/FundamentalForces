@@ -6,14 +6,12 @@ import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import team.lodestar.fufo.FufoMod;
+import team.lodestar.fufo.registry.common.magic.FufoPlayerStateKeys;
 
-public class DashState implements FufoPlayerState {
-    public static final ResourceLocation DASH = FufoMod.fufoPath("dash");
+public class DashState implements FufoPlayerStateKeys.FufoPlayerState {
 
-    public static final int INITIAL_STATE_LIFETIME = 8;
     public static final int DASH_DURATION = 3;
-
-    public int stateLifetime = INITIAL_STATE_LIFETIME;
+    public int stateLifetime = 3;
     public final Vec3 forcedMotion;
     public final boolean wasGrounded;
     public boolean discarded;
@@ -24,10 +22,8 @@ public class DashState implements FufoPlayerState {
     }
 
     public void tick(Player player) {
-        if (wasGrounded) {
-            player.setOnGround(true);
-        }
         if (isActive()) {
+            player.noJumpDelay = 0;
             if (player instanceof ServerPlayer) {
                 player.hasImpulse = true;
                 player.resetFallDistance();
@@ -40,10 +36,13 @@ public class DashState implements FufoPlayerState {
         if (stateLifetime == 0) {
             end(player);
         }
+        if (wasGrounded) {
+            player.setOnGround(true);
+        }
     }
 
     public boolean isActive() {
-        return stateLifetime > INITIAL_STATE_LIFETIME - DASH_DURATION;
+        return stateLifetime > 0;
     }
 
     public void end(Player player) {

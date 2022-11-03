@@ -37,16 +37,6 @@ public class FufoSpellTypes {
             defaultSpellInstance(FufoSpellCastModes.INSTANT),
             new PlaceBlockSpellEffect(FufoBlocks.FORCE_ORB, FufoMagicElements.FORCE)));
 
-    public static final SpellType HASTE_SPELL = registerSpellHolder(new SpellType(FufoMod.fufoPath("haste_spell"),
-            defaultSpellInstance(FufoSpellCastModes.INSTANT,
-                    new CooldownAttribute(10)
-            ),
-            new ToggledPotionSpellEffect(()-> {
-                MobEffectInstance mobEffectInstance = new MobEffectInstance(MobEffects.DIG_SPEED, 100000, 1);
-                mobEffectInstance.setNoCounter(true);
-                return mobEffectInstance;
-            }, FufoMagicElements.FIRE)));
-
     public static final SpellType MOVEMENT_SPELL = registerSpellHolder(new SpellType(FufoMod.fufoPath("movement_spell"),
             defaultSpellInstance(FufoSpellCastModes.INSTANT,
                     new CooldownAttribute(10)

@@ -50,10 +50,16 @@ public class SpellInstance {
             cooldown.tick();
         }
         selectedTime = selected ? selectedTime + 1 : 0;
-        if (selected && selectedFadeAnimation < 20) {
-            selectedFadeAnimation++;
-        } else if (selectedFadeAnimation > 0) {
-            selectedFadeAnimation -= 0.5f;
+        if (spellType.isToggledEffectActive(this)) {
+            if (selectedFadeAnimation < 20) {
+                selectedFadeAnimation += 2;
+            }
+        } else {
+            if (selected && selectedFadeAnimation < 20) {
+                selectedFadeAnimation++;
+            } else if (selectedFadeAnimation > 0) {
+                selectedFadeAnimation -= 0.5f;
+            }
         }
         getSpellEffect().tick(this, level, player);
     }

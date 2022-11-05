@@ -2,12 +2,12 @@ package team.lodestar.fufo.common.magic.spell.effects;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import team.lodestar.fufo.common.capability.FufoPlayerDataCapability;
 import team.lodestar.fufo.core.magic.spell.SpellEffect;
 import team.lodestar.fufo.core.magic.spell.SpellInstance;
 
 public abstract class ToggledEffect extends SpellEffect {
     public static final String NBT = "effect_active";
-
 
     public ToggledEffect() {
         super(CastLogicHandler.ALWAYS_DEFAULT_CAST);
@@ -23,6 +23,7 @@ public abstract class ToggledEffect extends SpellEffect {
             spell.extraData.putBoolean(NBT, true);
             toggleOn(spell, player);
         }
+        FufoPlayerDataCapability.syncTrackingAndSelf(player);
         player.swing(InteractionHand.MAIN_HAND, true);
     }
 

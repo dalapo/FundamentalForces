@@ -36,7 +36,14 @@ public class SpellType {
     }
 
     public ResourceLocation getBackgroundLocation(SpellInstance instance) {
+        if (isToggledEffectActive(instance)) {
+            return FufoMod.fufoPath("textures/spell/" + element.id.getPath() + "/" + id.getPath() + "_background_active.png");
+        }
         return FufoMod.fufoPath("textures/spell/" + element.id.getPath() + "/" + id.getPath() + "_background.png");
+    }
+
+    public boolean isToggledEffectActive(SpellInstance instance) {
+        return instance.extraData.getBoolean(ToggledEffect.NBT);
     }
 
     public static SpellTypeBuilder createSpellType(ResourceLocation id, SpellEffect spellEffect) {

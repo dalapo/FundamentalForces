@@ -3,7 +3,6 @@ package team.lodestar.fufo.core.magic.spell;
 import team.lodestar.fufo.common.capability.FufoPlayerDataCapability;
 import team.lodestar.fufo.common.packets.spell.SyncSpellCooldownPacket;
 import team.lodestar.fufo.core.magic.MagicElementType;
-import team.lodestar.fufo.registry.common.magic.FufoMagicElements;
 import team.lodestar.fufo.registry.common.magic.FufoSpellDataKeys;
 import team.lodestar.fufo.registry.common.magic.FufoSpellDataKeys.SpellAttributeMap;
 import team.lodestar.fufo.registry.common.magic.FufoSpellTypes;
@@ -50,7 +49,7 @@ public class SpellInstance {
             cooldown.tick();
         }
         selectedTime = selected ? selectedTime + 1 : 0;
-        if (spellType.isToggledEffectActive(this)) {
+        if (isToggledEffectActive()) {
             if (selectedFadeAnimation < 20) {
                 selectedFadeAnimation += 2;
             }
@@ -61,6 +60,7 @@ public class SpellInstance {
                 selectedFadeAnimation -= 0.5f;
             }
         }
+
         getSpellEffect().tick(this, level, player);
     }
 
@@ -107,6 +107,10 @@ public class SpellInstance {
 
     public SpellCastMode getCastMode() {
         return spellType.defaultCastMode;
+    }
+
+    public boolean isToggledEffectActive() {
+        return spellType.isToggledEffectActive(this);
     }
 
     public boolean isOnCooldown() {

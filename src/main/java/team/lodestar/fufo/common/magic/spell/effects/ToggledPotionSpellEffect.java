@@ -18,10 +18,6 @@ public class ToggledPotionSpellEffect extends ToggledEffect{
     }
 
     @Override
-    public void tick(SpellInstance spell, Level level, @Nullable ServerPlayer player) {
-    }
-
-    @Override
     public void toggleOn(SpellInstance spell, ServerPlayer player) {
         MobEffectInstance pEffectInstance = new MobEffectInstance(effectSupplier.get(), 100000, 1);
         pEffectInstance.setNoCounter(true);

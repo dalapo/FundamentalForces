@@ -13,6 +13,7 @@ public abstract class ToggledEffect extends SpellEffect {
         super(CastLogicHandler.ALWAYS_DEFAULT_CAST);
     }
 
+
     @Override
     public void effect(SpellInstance spell, ServerPlayer player) {
         boolean hasSpellAttribute = isActive(spell);

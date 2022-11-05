@@ -2,26 +2,82 @@ package team.lodestar.fufo.core.magic.spell;
 
 import team.lodestar.fufo.FufoMod;
 import net.minecraft.resources.ResourceLocation;
+import team.lodestar.fufo.common.magic.spell.effects.ToggledEffect;
+import team.lodestar.fufo.core.magic.MagicElementType;
+import team.lodestar.fufo.registry.common.magic.FufoMagicElements;
+import team.lodestar.fufo.registry.common.magic.FufoSpellCastModes;
+import team.lodestar.fufo.registry.common.magic.FufoSpellDataKeys;
 
+import java.util.Arrays;
 import java.util.function.Function;
 
 public class SpellType {
     public final ResourceLocation id;
-    public final Function<SpellType, SpellInstance> defaultInstanceSupplier;
     public final SpellEffect effect;
+    public final MagicElementType element;
+    public final SpellCastMode defaultCastMode;
+    public final Function<SpellType, SpellInstance> defaultInstanceSupplier;
+    public final FufoSpellDataKeys.SpellAttributeMap<SpellAttribute> spellAttributes;
 
-    //TODO: we wouldn't want to have to check != null everywhere for all these parameters, at least mainly SpellEffect
-    public SpellType(ResourceLocation id, Function<SpellType, SpellInstance> defaultInstanceSupplier, SpellEffect effect) {
+    protected SpellType(ResourceLocation id, SpellEffect effect, MagicElementType element, SpellCastMode defaultCastMode, Function<SpellType, SpellInstance> defaultInstanceSupplier) {
+        this(id, effect, element, defaultCastMode, defaultInstanceSupplier, new FufoSpellDataKeys.SpellAttributeMap<>());
+    }
+    protected SpellType(ResourceLocation id, SpellEffect effect, MagicElementType element, SpellCastMode defaultCastMode, Function<SpellType, SpellInstance> defaultInstanceSupplier, FufoSpellDataKeys.SpellAttributeMap<SpellAttribute> spellAttributes) {
         this.id = id;
-        this.defaultInstanceSupplier = defaultInstanceSupplier;
         this.effect = effect;
+        this.element = element;
+        this.defaultCastMode = defaultCastMode;
+        this.defaultInstanceSupplier = defaultInstanceSupplier;
+        this.spellAttributes = spellAttributes;
     }
 
-    public ResourceLocation getIconLocation() {
-        return FufoMod.fufoPath("textures/spell/icon/" + id.getPath() + ".png");
+    public ResourceLocation getIconLocation(SpellInstance instance) {
+        return FufoMod.fufoPath("textures/spell/" + element.id.getPath() + "/" + id.getPath() + ".png");
     }
 
-    public ResourceLocation getBackgroundLocation() {
-        return FufoMod.fufoPath("textures/spell/background/" + id.getPath() + "_background.png");
+    public ResourceLocation getBackgroundLocation(SpellInstance instance) {
+        return FufoMod.fufoPath("textures/spell/" + element.id.getPath() + "/" + id.getPath() + "_background.png");
+    }
+
+    public static SpellTypeBuilder createSpellType(ResourceLocation id, SpellEffect spellEffect) {
+        return new SpellTypeBuilder(id, spellEffect);
+    }
+
+    public static class SpellTypeBuilder {
+        private final ResourceLocation id;
+        private final SpellEffect spellEffect;
+        private MagicElementType element = FufoMagicElements.FORCE;
+        public SpellCastMode defaultCastMode = FufoSpellCastModes.INSTANT;
+        private Function<SpellType, SpellInstance> defaultInstanceSupplier = SpellInstance::new;
+        public final FufoSpellDataKeys.SpellAttributeMap<SpellAttribute> spellAttributes = new FufoSpellDataKeys.SpellAttributeMap<>();
+
+        public SpellTypeBuilder(ResourceLocation id, SpellEffect spellEffect) {
+            this.id = id;
+            this.spellEffect = spellEffect;
+        }
+
+        public SpellTypeBuilder setDefaultInstance(Function<SpellType, SpellInstance> defaultInstanceSupplier) {
+            this.defaultInstanceSupplier = defaultInstanceSupplier;
+            return this;
+        }
+
+        public SpellTypeBuilder setSpellElement(MagicElementType element) {
+            this.element = element;
+            return this;
+        }
+
+        public SpellTypeBuilder setCastMode(SpellCastMode castMode) {
+            this.defaultCastMode = castMode;
+            return this;
+        }
+
+        public SpellTypeBuilder addAttributes(SpellAttribute... attributes) {
+            Arrays.stream(attributes).forEach(a -> FufoSpellDataKeys.DATA_KEYS.get(a.id).putAttribute(spellAttributes, a));
+            return this;
+        }
+
+        public SpellType build() {
+            return new SpellType(id, spellEffect, element, defaultCastMode, defaultInstanceSupplier, spellAttributes);
+        }
     }
 }

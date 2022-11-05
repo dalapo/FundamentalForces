@@ -10,7 +10,6 @@ import team.lodestar.fufo.registry.common.magic.FufoPlayerStateKeys;
 
 public class DashState implements FufoPlayerStateKeys.FufoPlayerState {
 
-    public static final int DASH_DURATION = 3;
     public int stateLifetime = 3;
     public final Vec3 forcedMotion;
     public final boolean wasGrounded;

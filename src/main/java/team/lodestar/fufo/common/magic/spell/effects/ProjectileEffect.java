@@ -2,6 +2,7 @@ package team.lodestar.fufo.common.magic.spell.effects;
 
 import team.lodestar.fufo.common.entity.magic.spell.AbstractSpellProjectile;
 import team.lodestar.fufo.core.magic.MagicElementType;
+import team.lodestar.fufo.core.magic.spell.SpellAttribute;
 import team.lodestar.fufo.core.magic.spell.SpellEffect;
 import team.lodestar.fufo.core.magic.spell.SpellInstance;
 import net.minecraft.server.level.ServerPlayer;
@@ -18,16 +19,16 @@ public class ProjectileEffect extends SpellEffect {
     public Color firstColor = new Color(16777215);
     public Color secondColor = new Color(16777215);
 
-    public ProjectileEffect(Function<Level, AbstractSpellProjectile> projectileSupplier, MagicElementType element){
-        super(CastLogicHandler.ALWAYS_DEFAULT_CAST, element);
+    public ProjectileEffect(Function<Level, AbstractSpellProjectile> projectileSupplier){
+        super(CastLogicHandler.ALWAYS_DEFAULT_CAST);
         this.projectileSupplier = projectileSupplier;
     }
     @Override
     public void effect(SpellInstance spell, ServerPlayer player) {
-        int lifespan = FufoSpellDataKeys.LIFESPAN_KEY.getMandatoryAttribute(spell.attributes).lifespan;
-        float velocity = FufoSpellDataKeys.VELOCITY_KEY.getMandatoryAttribute(spell.attributes).velocity;
+        int lifespan = FufoSpellDataKeys.LIFESPAN_KEY.getMandatoryAttribute(spell.getSpellAttributes()).lifespan;
+        float velocity = FufoSpellDataKeys.VELOCITY_KEY.getMandatoryAttribute(spell.getSpellAttributes()).velocity;
         AbstractSpellProjectile projectile = projectileSupplier.apply(player.level)
-                .setElement(element)
+                .setElement(spell.getElement())
                 .setColor(firstColor, secondColor)
                 .setLifetime(lifespan);
 

@@ -2,6 +2,8 @@ package team.lodestar.fufo.core.magic.spell;
 
 import team.lodestar.fufo.common.capability.FufoPlayerDataCapability;
 import team.lodestar.fufo.common.packets.spell.SyncSpellCooldownPacket;
+import team.lodestar.fufo.core.magic.MagicElementType;
+import team.lodestar.fufo.registry.common.magic.FufoMagicElements;
 import team.lodestar.fufo.registry.common.magic.FufoSpellDataKeys;
 import team.lodestar.fufo.registry.common.magic.FufoSpellDataKeys.SpellAttributeMap;
 import team.lodestar.fufo.registry.common.magic.FufoSpellTypes;
@@ -19,36 +21,27 @@ import javax.annotation.Nullable;
 
 public class SpellInstance {
 
-    //https://tenor.com/view/fire-explosion-meme-fishing-gif-23044892
     public static final SpellInstance EMPTY = new SpellInstance(FufoSpellTypes.EMPTY);
     public final SpellType spellType;
     public SpellCooldown cooldown;
     public boolean selected;
     public int selectedTime;
     public float selectedFadeAnimation;
-    public SpellCastMode castMode;
-    public SpellEffect effect;
-    public final SpellAttributeMap<SpellAttribute> attributes = new SpellAttributeMap<>();
-
-    public SpellInstance(SpellType spellType, SpellCastMode castMode) {
-        this.spellType = spellType;
-        this.castMode = castMode;
-        this.effect = spellType.effect;
-    }
+    public CompoundTag extraData = new CompoundTag();
 
     public SpellInstance(SpellType spellType) {
         this.spellType = spellType;
     }
 
     public void cast(ServerPlayer player, BlockPos pos, BlockHitResult hitVec) {
-        if (castMode.canCast(this, player, pos, hitVec)) {
-            effect.cast(this, player, hitVec);
+        if (getCastMode().canCast(this, player, pos, hitVec)) {
+            getSpellEffect().cast(this, player, hitVec);
         }
     }
 
     public void cast(ServerPlayer player) {
-        if (castMode.canCast(this, player)) {
-            effect.cast(this, player);
+        if (getCastMode().canCast(this, player)) {
+            getSpellEffect().cast(this, player);
         }
     }
 
@@ -62,11 +55,11 @@ public class SpellInstance {
         } else if (selectedFadeAnimation > 0) {
             selectedFadeAnimation -= 0.5f;
         }
-        effect.tick(this, level, player);
+        getSpellEffect().tick(this, level, player);
     }
 
     public final void reactToDeath(ServerPlayer player) {
-        effect.reactToDeath(this, player);
+        getSpellEffect().reactToDeath(this, player);
     }
 
     public float getIconFadeout() {
@@ -89,9 +82,25 @@ public class SpellInstance {
     }
 
     public void setDefaultCooldown(ServerPlayer player) {
-        FufoSpellDataKeys.COOLDOWN_KEY.getOptionalAttribute(attributes).ifPresent(d -> {
+        FufoSpellDataKeys.COOLDOWN_KEY.getOptionalAttribute(getSpellAttributes()).ifPresent(d -> {
             setCooldown(new SpellCooldown(d.duration), player);
         });
+    }
+
+    public SpellAttributeMap<SpellAttribute> getSpellAttributes() {
+        return spellType.spellAttributes;
+    }
+
+    public MagicElementType getElement() {
+        return spellType.element;
+    }
+
+    public SpellEffect getSpellEffect() {
+        return spellType.effect;
+    }
+
+    public SpellCastMode getCastMode() {
+        return spellType.defaultCastMode;
     }
 
     public boolean isOnCooldown() {
@@ -105,19 +114,21 @@ public class SpellInstance {
     public CompoundTag serializeNBT() {
         CompoundTag spellTag = new CompoundTag();
         spellTag.putString("type", spellType.id.toString());
-        if (castMode != null) {
-            spellTag.put("castMode", castMode.serializeNBT());
+        if (getCastMode() != null) {
+            spellTag.put("castMode", getCastMode().serializeNBT());
         }
         if (isOnCooldown()) {
             spellTag.put("spellCooldown", cooldown.serializeNBT());
         }
-        if (!isEmpty()) {
-            CompoundTag attributesTag = new CompoundTag();
-            for (SpellAttribute attribute : attributes.values()) {
-                attributesTag.put(attribute.id.toString(), attribute.serializeNBT());
-            }
-            spellTag.put("attributes", attributesTag);
-        }
+        spellTag.put("extraData", extraData);
+        //TODO: once you get to making spell attribute modifiers (runes), reuse this code with rune stuffs
+//        if (!isEmpty()) {
+//            CompoundTag attributesTag = new CompoundTag();
+//            for (SpellAttribute attribute : attributes.values()) {
+//                attributesTag.put(attribute.id.toString(), attribute.serializeNBT());
+//            }
+//            spellTag.put("attributes", attributesTag);
+//        }
         return spellTag;
     }
 
@@ -126,20 +137,21 @@ public class SpellInstance {
         if (type == null) {
             return EMPTY;
         }
-        SpellInstance spellInstance = new SpellInstance(type,
-                SpellCastMode.deserializeNBT(tag.getCompound("castMode")));
+        SpellInstance spellInstance = new SpellInstance(type);
         if (tag.contains("spellCooldown")) {
             spellInstance.cooldown = SpellCooldown.deserializeNBT(tag.getCompound("spellCooldown"));
         }
-        CompoundTag attributes = tag.getCompound("attributes");
-        for (String path : attributes.getAllKeys()) {
-            FufoSpellDataKeys.SpellDataKey<? extends SpellAttribute> spellDataKey = FufoSpellDataKeys.DATA_KEYS.get(new ResourceLocation(path));
-            if (spellDataKey == null) {
-                return EMPTY;
-            }
-            SpellAttribute attribute = spellDataKey.serializer.apply(attributes.getCompound(path));
-            spellDataKey.putAttribute(spellInstance.attributes, spellDataKey.classType.cast(attribute));
-        }
+        spellInstance.extraData = tag.getCompound("extraData");
+        //TODO: once you get to making spell attribute modifiers (runes), reuse this code with rune stuffs
+//        CompoundTag attributes = tag.getCompound("attributes");
+//        for (String path : attributes.getAllKeys()) {
+//            FufoSpellDataKeys.SpellDataKey<? extends SpellAttribute> spellDataKey = FufoSpellDataKeys.DATA_KEYS.get(new ResourceLocation(path));
+//            if (spellDataKey == null) {
+//                return EMPTY;
+//            }
+//            SpellAttribute attribute = spellDataKey.serializer.apply(attributes.getCompound(path));
+//            spellDataKey.putAttribute(spellInstance.attributes, spellDataKey.classType.cast(attribute));
+//        }
         return spellInstance;
     }
 }

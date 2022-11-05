@@ -4,8 +4,10 @@ import net.minecraft.world.level.Level;
 import team.lodestar.fufo.core.magic.MagicElementType;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.BlockHitResult;
+import team.lodestar.fufo.registry.common.magic.FufoSpellDataKeys;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
 
 public abstract class SpellEffect {
 
@@ -16,11 +18,9 @@ public abstract class SpellEffect {
     }
 
     public final CastLogicHandler handler;
-    public final MagicElementType element;
 
-    public SpellEffect(CastLogicHandler handler, MagicElementType element) {
+    public SpellEffect(CastLogicHandler handler) {
         this.handler = handler;
-        this.element = element;
     }
 
     public void tick(SpellInstance spell, Level level, @Nullable ServerPlayer player) {

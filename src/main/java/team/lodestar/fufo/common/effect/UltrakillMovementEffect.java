@@ -65,7 +65,7 @@ public class UltrakillMovementEffect extends MobEffect {
             }
         }
         if (effectInstance != null) {
-            entity.setDeltaMovement(entity.getDeltaMovement().add(0, effectInstance.getAmplifier() * 0.2f, 0));
+            entity.setDeltaMovement(entity.getDeltaMovement().add(0, effectInstance.getAmplifier() * 0.25f, 0));
         }
     }
 

@@ -1,6 +1,5 @@
 package team.lodestar.fufo.common.magic.spell.effects;
 
-import team.lodestar.fufo.core.magic.MagicElementType;
 import team.lodestar.fufo.core.magic.spell.SpellEffect;
 import team.lodestar.fufo.core.magic.spell.SpellInstance;
 import com.tterrag.registrate.util.entry.BlockEntry;
@@ -12,8 +11,8 @@ import net.minecraft.world.phys.BlockHitResult;
 
 public class PlaceBlockSpellEffect extends SpellEffect {
     BlockEntry<?> entry;
-    public PlaceBlockSpellEffect(BlockEntry<?> entry, MagicElementType element){
-        super(CastLogicHandler.ONLY_BLOCK, element);
+    public PlaceBlockSpellEffect(BlockEntry<?> entry){
+        super(CastLogicHandler.ONLY_BLOCK);
         this.entry = entry;
     }
 

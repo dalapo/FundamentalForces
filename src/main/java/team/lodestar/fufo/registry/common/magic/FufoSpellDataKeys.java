@@ -15,8 +15,6 @@ import static team.lodestar.fufo.FufoMod.fufoPath;
 public class FufoSpellDataKeys {
     public static final Map<ResourceLocation, SpellDataKey<? extends SpellAttribute>> DATA_KEYS = new HashMap<>();
 
-    public static final SpellDataKey<EffectActiveAttribute> EFFECT_ACTIVE_KEY = registerDataKey(fufoPath("active"), EffectActiveAttribute.class, EffectActiveAttribute::deserializeNBT);
-
     public static final SpellDataKey<CooldownAttribute> COOLDOWN_KEY = registerDataKey(fufoPath("cooldown"), CooldownAttribute.class, CooldownAttribute::deserializeNBT);
     public static final SpellDataKey<LifespanAttribute> LIFESPAN_KEY = registerDataKey(fufoPath("lifespan"), LifespanAttribute.class, LifespanAttribute::deserializeNBT);
     public static final SpellDataKey<VelocityAttribute> VELOCITY_KEY = registerDataKey(fufoPath("velocity"), VelocityAttribute.class, VelocityAttribute::deserializeNBT);
@@ -58,7 +56,7 @@ public class FufoSpellDataKeys {
         }
 
         public Optional<T> getOptionalAttribute(SpellAttributeMap<?> spellAttributeMap) {
-            return Optional.of(classType.cast(spellAttributeMap.get(this)));
+            return Optional.ofNullable(classType.cast(spellAttributeMap.get(this)));
         }
 
         public T getMandatoryAttribute(SpellAttributeMap<?> spellAttributeMap) {

@@ -20,6 +20,7 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import team.lodestar.fufo.FufoMod;
 import team.lodestar.fufo.common.capability.FufoPlayerDataCapability;
+import team.lodestar.fufo.common.magic.spell.effects.ToggledEffect;
 import team.lodestar.fufo.core.magic.spell.SpellInstance;
 import team.lodestar.fufo.core.magic.spell.SpellEffect;
 import team.lodestar.fufo.registry.client.FufoKeybinds;
@@ -44,7 +45,7 @@ public class PlayerSpellHandler {
                 FufoPlayerDataCapability.getCapabilityOptional(serverPlayer).ifPresent(c -> {
                     if (c.hotbarHandler.isSpellHotbarOpen) {
                         SpellInstance selectedSpell = c.hotbarHandler.spellStorage.getSelectedSpell(serverPlayer);
-                        if (!selectedSpell.isEmpty() && selectedSpell.effect.handler != SpellEffect.CastLogicHandler.ALWAYS_DEFAULT_CAST) {
+                        if (!selectedSpell.isEmpty() && selectedSpell.getSpellEffect().handler != SpellEffect.CastLogicHandler.ALWAYS_DEFAULT_CAST) {
                             selectedSpell.cast(serverPlayer, event.getPos(), event.getHitVec());
                         }
                     }
@@ -68,7 +69,7 @@ public class PlayerSpellHandler {
             if (event.player instanceof ServerPlayer serverPlayer) {
                 if (handler.isSpellHotbarOpen && LodestonePlayerDataCapability.getCapability(player).rightClickHeld) {
                     SpellInstance selectedSpell = handler.spellStorage.getSelectedSpell(player);
-                    if (!selectedSpell.isEmpty() && selectedSpell.effect.handler != SpellEffect.CastLogicHandler.ONLY_BLOCK) {
+                    if (!selectedSpell.isEmpty() && selectedSpell.getSpellEffect().handler != SpellEffect.CastLogicHandler.ONLY_BLOCK) {
                         selectedSpell.cast(serverPlayer);
                     }
                 }
@@ -175,7 +176,7 @@ public class PlayerSpellHandler {
             return visible;
         }
 
-        public static Tesselator spellTesselator = new Tesselator();
+        public static final Tesselator SPELL_TESSELATOR = new Tesselator(); //TODO: this is probably not needed?
 
         public static void renderSpellHotbar(RenderGuiOverlayEvent.Post event) {
             Minecraft minecraft = Minecraft.getInstance();
@@ -194,7 +195,7 @@ public class PlayerSpellHandler {
                         RenderSystem.enableBlend();
 
                         VFXBuilders.ScreenVFXBuilder barBuilder = VFXBuilders.createScreen().setPosColorTexDefaultFormat().setShader(GameRenderer::getPositionColorTexShader).setShaderTexture(ICONS_TEXTURE);
-                        VFXBuilders.ScreenVFXBuilder spellBuilder = VFXBuilders.createScreen().setPosTexDefaultFormat().overrideBufferBuilder(spellTesselator.getBuilder());
+                        VFXBuilders.ScreenVFXBuilder spellBuilder = VFXBuilders.createScreen().setPosTexDefaultFormat().overrideBufferBuilder(SPELL_TESSELATOR.getBuilder());
                         barBuilder.setUVWithWidth(0, 0, 218, 28, 256f).setPositionWithWidth(left, top, 218, 28).draw(poseStack);
                         barBuilder.setUVWithWidth(0, 28, 28, 30, 256f).setPositionWithWidth(left + slot * 24 - 1, top - 1, 28, 30).draw(poseStack);
 
@@ -202,8 +203,8 @@ public class PlayerSpellHandler {
                         for (int i = 0; i < c.hotbarHandler.spellStorage.size; i++) {
                             SpellInstance instance = c.hotbarHandler.spellStorage.spells.get(i);
                             if (!instance.isEmpty()) {
-                                ResourceLocation background = instance.spellType.getBackgroundLocation();
-                                ResourceLocation icon = instance.spellType.getIconLocation();
+                                ResourceLocation background = instance.spellType.getBackgroundLocation(instance);
+                                ResourceLocation icon = instance.spellType.getIconLocation(instance);
                                 int x = left + i * 24 + 3;
                                 int y = top + 3;
 

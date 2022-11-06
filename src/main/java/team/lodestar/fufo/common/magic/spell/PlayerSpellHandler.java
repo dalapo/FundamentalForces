@@ -30,48 +30,26 @@ import team.lodestar.fufo.registry.client.FufoKeybinds;
 import team.lodestar.lodestone.capability.LodestonePlayerDataCapability;
 import team.lodestar.lodestone.systems.rendering.VFXBuilders;
 
-<<<<<<<< HEAD:src/main/java/team/lodestar/fufo/unsorted/handlers/PlayerSpellInventoryHandler.java
-//Whoever programmed this class must really like cock and balls like a lot
-// Luckily whoever rewrote it must be a genius
-public class PlayerSpellInventoryHandler {
-    public final SpellHotbar spellHotbar;
-    public boolean open;
-========
 public class PlayerSpellHandler {
     public final SpellStorage spellStorage;
     public boolean isSpellHotbarOpen;
->>>>>>>> 7ddb0685b74a161452b277c2b29ae2bb39e3750f:src/main/java/team/lodestar/fufo/common/magic/spell/PlayerSpellHandler.java
     public boolean unlockedSpellHotbar = true;
     public float animationProgress;
     public int cachedSlot;
     public boolean updateCachedSlot;
 
-<<<<<<<< HEAD:src/main/java/team/lodestar/fufo/unsorted/handlers/PlayerSpellInventoryHandler.java
-    private SpellInstance[] spells = new SpellInstance[27];
-    
-    public PlayerSpellInventoryHandler(SpellHotbar spellHotbar) {
-        this.spellHotbar = spellHotbar;
-========
+
     public PlayerSpellHandler(SpellStorage spellStorage) {
         this.spellStorage = spellStorage;
->>>>>>>> 7ddb0685b74a161452b277c2b29ae2bb39e3750f:src/main/java/team/lodestar/fufo/common/magic/spell/PlayerSpellHandler.java
-    }
+        }
 
     public static void playerInteract(PlayerInteractEvent.RightClickBlock event) {
         if (event.getHand().equals(InteractionHand.MAIN_HAND)) {
             if (event.getEntity() instanceof ServerPlayer serverPlayer) {
                 FufoPlayerDataCapability.getCapabilityOptional(serverPlayer).ifPresent(c -> {
-<<<<<<<< HEAD:src/main/java/team/lodestar/fufo/unsorted/handlers/PlayerSpellInventoryHandler.java
-                	FufoMod.LOGGER.info("Spell interact");
-                    if (c.hotbarHandler.open) {
-                        SpellInstance selectedSpell = c.hotbarHandler.spellHotbar.getSelectedSpell(serverPlayer);
-                        FufoMod.LOGGER.info(selectedSpell);
-                        if (!selectedSpell.isEmpty() && selectedSpell.effect.handler != SpellEffect.CastLogicHandler.ALWAYS_DEFAULT_CAST) {
-========
                     if (c.hotbarHandler.isSpellHotbarOpen) {
                         SpellInstance selectedSpell = c.hotbarHandler.spellStorage.getSelectedSpell(serverPlayer);
                         if (!selectedSpell.isEmpty() && selectedSpell.getSpellEffect().handler != SpellEffect.CastLogicHandler.ALWAYS_DEFAULT_CAST) {
->>>>>>>> 7ddb0685b74a161452b277c2b29ae2bb39e3750f:src/main/java/team/lodestar/fufo/common/magic/spell/PlayerSpellHandler.java
                             selectedSpell.cast(serverPlayer, event.getPos(), event.getHitVec());
                         }
                     }
@@ -83,17 +61,10 @@ public class PlayerSpellHandler {
     public static void playerTick(TickEvent.PlayerTickEvent event) {
         Player player = event.player;
         FufoPlayerDataCapability.getCapabilityOptional(player).ifPresent(c -> {
-<<<<<<<< HEAD:src/main/java/team/lodestar/fufo/unsorted/handlers/PlayerSpellInventoryHandler.java
-            PlayerSpellInventoryHandler handler = c.hotbarHandler;
-            for (int i = 0; i < handler.spellHotbar.spells.size(); i++) {
-                int selected = handler.spellHotbar.getSelectedSpellIndex(player);
-                SpellInstance instance = handler.spellHotbar.spells.get(i);
-========
             PlayerSpellHandler handler = c.hotbarHandler;
             for (int i = 0; i < handler.spellStorage.spells.size(); i++) {
                 int selected = handler.spellStorage.getSelectedSpellIndex(player);
                 SpellInstance instance = handler.spellStorage.spells.get(i);
->>>>>>>> 7ddb0685b74a161452b277c2b29ae2bb39e3750f:src/main/java/team/lodestar/fufo/common/magic/spell/PlayerSpellHandler.java
                 instance.selected = i == selected;
                 if (!instance.isEmpty()) {
                     instance.tick(player.level, (player instanceof ServerPlayer serverPlayer) ? serverPlayer : null);
@@ -164,13 +135,8 @@ public class PlayerSpellHandler {
         public static void clientTick(TickEvent.ClientTickEvent event) {
             Player player = Minecraft.getInstance().player;
             FufoPlayerDataCapability.getCapabilityOptional(player).ifPresent(c -> {
-<<<<<<<< HEAD:src/main/java/team/lodestar/fufo/unsorted/handlers/PlayerSpellInventoryHandler.java
-                PlayerSpellInventoryHandler handler = c.hotbarHandler;
-                float desired = handler.open ? 1 : 0;
-========
                 PlayerSpellHandler handler = c.hotbarHandler;
                 float desired = handler.isSpellHotbarOpen ? 1 : 0;
->>>>>>>> 7ddb0685b74a161452b277c2b29ae2bb39e3750f:src/main/java/team/lodestar/fufo/common/magic/spell/PlayerSpellHandler.java
                 handler.animationProgress = Mth.lerp(0.2f, handler.animationProgress, desired);
                 if (handler.updateCachedSlot) {
                     if ((handler.isSpellHotbarOpen && handler.animationProgress > 0.5f) || (!handler.isSpellHotbarOpen && handler.animationProgress < 0.5f)) {
@@ -181,12 +147,7 @@ public class PlayerSpellHandler {
                     }
                 }
                 if (FufoKeybinds.swapHotbar.consumeClick()) {
-<<<<<<<< HEAD:src/main/java/team/lodestar/fufo/unsorted/handlers/PlayerSpellInventoryHandler.java
-                	// When Z is pressed, do stuff
-                    PlayerSpellInventoryHandler.ClientOnly.swapHotbar();
-========
                     PlayerSpellHandler.ClientOnly.swapHotbar();
->>>>>>>> 7ddb0685b74a161452b277c2b29ae2bb39e3750f:src/main/java/team/lodestar/fufo/common/magic/spell/PlayerSpellHandler.java
                 }
             });
         }
@@ -195,13 +156,8 @@ public class PlayerSpellHandler {
 //        	Thread.dumpStack();
             Player player = Minecraft.getInstance().player;
             FufoPlayerDataCapability.getCapabilityOptional(player).ifPresent(c -> {
-<<<<<<<< HEAD:src/main/java/team/lodestar/fufo/unsorted/handlers/PlayerSpellInventoryHandler.java
-                PlayerSpellInventoryHandler handler = c.hotbarHandler;
-                handler.open = !handler.open;
-========
                 PlayerSpellHandler handler = c.hotbarHandler;
                 handler.isSpellHotbarOpen = !handler.isSpellHotbarOpen;
->>>>>>>> 7ddb0685b74a161452b277c2b29ae2bb39e3750f:src/main/java/team/lodestar/fufo/common/magic/spell/PlayerSpellHandler.java
                 handler.updateCachedSlot = true;
                 FufoPlayerDataCapability.syncServer(player);
             });
@@ -225,20 +181,7 @@ public class PlayerSpellHandler {
             return visible;
         }
 
-<<<<<<<< HEAD:src/main/java/team/lodestar/fufo/unsorted/handlers/PlayerSpellInventoryHandler.java
-        public static void renderSpellInventory(ContainerScreenEvent event) {
-        	Minecraft minecraft = Minecraft.getInstance();
-        	LocalPlayer player = minecraft.player;
-        	if (event.getContainerScreen().getClass() == InventoryScreen.class) {
-//        		FufoMod.LOGGER.info("Canceled!");
-        		event.setCanceled(true);
-        	}
-        }
-        
-        public static Tesselator spellTesselator = new Tesselator();
-========
         public static final Tesselator SPELL_TESSELATOR = new Tesselator(); //TODO: this is probably not needed?
->>>>>>>> 7ddb0685b74a161452b277c2b29ae2bb39e3750f:src/main/java/team/lodestar/fufo/common/magic/spell/PlayerSpellHandler.java
 
         public static void renderSpellHotbar(RenderGuiOverlayEvent.Post event) {
             Minecraft minecraft = Minecraft.getInstance();

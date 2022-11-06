@@ -21,12 +21,7 @@ import team.lodestar.fufo.common.effect.UltrakillMovementEffect;
 import team.lodestar.fufo.common.fluid.FluidPipeNetworkRegistry;
 import team.lodestar.fufo.common.magic.spell.PlayerSpellHandler;
 import team.lodestar.fufo.core.fluid.FluidPipeNetwork;
-<<<<<<< HEAD
-import team.lodestar.fufo.unsorted.handlers.PlayerSpellInventoryHandler;
-import team.lodestar.fufo.unsorted.handlers.StarfallEventHandler;
-=======
 import team.lodestar.fufo.common.starfall.StarfallEventHandler;
->>>>>>> 7ddb0685b74a161452b277c2b29ae2bb39e3750f
 import team.lodestar.lodestone.events.types.RightClickEmptyServer;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
@@ -71,21 +66,13 @@ public class RuntimeEvents {
 
     @SubscribeEvent
     public static void playerTick(TickEvent.PlayerTickEvent event) {
-<<<<<<< HEAD
-        PlayerSpellInventoryHandler.playerTick(event);
-=======
         PlayerSpellHandler.playerTick(event);
         UltrakillMovementEffect.playerTick(event);
->>>>>>> 7ddb0685b74a161452b277c2b29ae2bb39e3750f
     }
 
     @SubscribeEvent
     public static void playerInteract(PlayerInteractEvent.RightClickBlock event) {
-<<<<<<< HEAD
-        PlayerSpellInventoryHandler.playerInteract(event);
-=======
         PlayerSpellHandler.playerInteract(event);
->>>>>>> 7ddb0685b74a161452b277c2b29ae2bb39e3750f
     }
 
     @SubscribeEvent

@@ -47,6 +47,9 @@ public class SpellInstance {
     public final void tick(Level level, @Nullable ServerPlayer player) {
         if (isOnCooldown()) {
             cooldown.tick();
+            if (cooldown.discarded) {
+                cooldown = null;
+            }
         }
         selectedTime = selected ? selectedTime + 1 : 0;
         if (isToggledEffectActive()) {

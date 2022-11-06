@@ -12,6 +12,7 @@ import team.lodestar.fufo.registry.common.worldevent.FufoWorldEventTypes;
 import team.lodestar.lodestone.handlers.ScreenshakeHandler;
 import team.lodestar.lodestone.helpers.BlockHelper;
 import team.lodestar.lodestone.helpers.EntityHelper;
+import team.lodestar.lodestone.helpers.VecHelper;
 import team.lodestar.lodestone.systems.easing.Easing;
 import team.lodestar.lodestone.systems.screenshake.PositionedScreenshakeInstance;
 import team.lodestar.lodestone.systems.worldevent.WorldEventInstance;
@@ -109,7 +110,7 @@ public class FallingStarfallEvent extends WorldEventInstance {
         if (level instanceof ServerLevel serverLevel) {
             actor.act(serverLevel, targetedPos);
         } else {
-            ScreenshakeHandler.addScreenshake(new PositionedScreenshakeInstance(80, BlockHelper.fromBlockPos(targetedPos), 10f, 800f, Easing.EXPO_OUT).setIntensity(3f, 0));
+            ScreenshakeHandler.addScreenshake(new PositionedScreenshakeInstance(80, VecHelper.fromBlockPos(targetedPos), 10f, 800f, Easing.EXPO_OUT).setIntensity(3f, 0));
             highlight.remove();
             highlight = null;
             playImpactEffect(new Vector3f(Vec3.atCenterOf(targetedPos)));

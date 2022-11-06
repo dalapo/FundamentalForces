@@ -18,14 +18,20 @@ import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import org.lwjgl.opengl.GL11;
 import team.lodestar.fufo.FufoMod;
 import team.lodestar.fufo.common.capability.FufoPlayerDataCapability;
 import team.lodestar.fufo.common.magic.spell.effects.ToggledEffect;
 import team.lodestar.fufo.core.magic.spell.SpellInstance;
 import team.lodestar.fufo.core.magic.spell.SpellEffect;
 import team.lodestar.fufo.registry.client.FufoKeybinds;
+import team.lodestar.fufo.registry.client.FufoShaders;
 import team.lodestar.lodestone.capability.LodestonePlayerDataCapability;
+import team.lodestar.lodestone.setup.LodestoneShaderRegistry;
+import team.lodestar.lodestone.systems.rendering.ExtendedShaderInstance;
 import team.lodestar.lodestone.systems.rendering.VFXBuilders;
+
+import java.util.function.Supplier;
 
 public class PlayerSpellHandler {
     public final SpellStorage spellStorage;
@@ -194,8 +200,13 @@ public class PlayerSpellHandler {
                         poseStack.translate(0, offset, 0);
                         RenderSystem.enableBlend();
 
-                        VFXBuilders.ScreenVFXBuilder barBuilder = VFXBuilders.createScreen().setPosColorTexDefaultFormat().setShader(GameRenderer::getPositionColorTexShader).setShaderTexture(ICONS_TEXTURE);
-                        VFXBuilders.ScreenVFXBuilder spellBuilder = VFXBuilders.createScreen().setPosTexDefaultFormat().overrideBufferBuilder(SPELL_TESSELATOR.getBuilder());
+                        ExtendedShaderInstance spellShine = FufoShaders.TOGGLED_SPELL_SHINE.instance;
+
+                        Supplier<VFXBuilders.ScreenVFXBuilder> builderSupplier = () -> VFXBuilders.createScreen().overrideBufferBuilder(SPELL_TESSELATOR.getBuilder());
+                        VFXBuilders.ScreenVFXBuilder barBuilder = builderSupplier.get().setPosColorTexDefaultFormat().setShader(GameRenderer::getPositionColorTexShader).setShaderTexture(ICONS_TEXTURE);
+                        VFXBuilders.ScreenVFXBuilder spellBuilder = builderSupplier.get().setPosTexDefaultFormat();
+                        VFXBuilders.ScreenVFXBuilder extraBuilder = builderSupplier.get().setPosColorTexDefaultFormat();
+
                         barBuilder.setUVWithWidth(0, 0, 218, 28, 256f).setPositionWithWidth(left, top, 218, 28).draw(poseStack);
                         barBuilder.setUVWithWidth(0, 28, 28, 30, 256f).setPositionWithWidth(left + slot * 24 - 1, top - 1, 28, 30).draw(poseStack);
 
@@ -221,8 +232,16 @@ public class PlayerSpellHandler {
                                     int cooldownOffset = (int) (22 * instance.cooldown.getProgress());
                                     barBuilder.setPositionWithWidth(x, y + cooldownOffset, 20, 22 - cooldownOffset).setUVWithWidth(28, 28 + cooldownOffset, 20, 22 - cooldownOffset, 256f).setAlpha(0.5f).draw(poseStack).setUVWithWidth(28, 28, 20, 22, 256f);
                                 }
+                                if (instance.isToggledEffectActive()) {
+                                    extraBuilder.setPositionWithWidth(x, y, 20, 22);
+                                    spellShine.safeGetUniform("Speed").set(1500f);
+                                    spellShine.safeGetUniform("ShineCount").set(8f);
+                                    RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
+                                    extraBuilder.setShader(FufoShaders.TOGGLED_SPELL_SHINE.getInstance()).setAlpha(instance.selectedTime/20f).setShaderTexture(background).draw(poseStack);
+                                }
                             }
                         }
+                        spellShine.setUniformDefaults();
                         RenderSystem.disableBlend();
                         poseStack.popPose();
                     }

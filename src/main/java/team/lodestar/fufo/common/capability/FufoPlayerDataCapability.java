@@ -1,6 +1,7 @@
 package team.lodestar.fufo.common.capability;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -15,15 +16,23 @@ import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.network.PacketDistributor;
 import team.lodestar.fufo.FufoMod;
+import team.lodestar.fufo.common.magic.spell.PlayerSpellHandler;
 import team.lodestar.fufo.common.packets.FufoPlayerCapabilitySyncPacket;
 import team.lodestar.fufo.common.fluid.PipeBuilderAssistant;
-import team.lodestar.fufo.core.spell.hotbar.SpellHotbar;
+import team.lodestar.fufo.common.magic.spell.SpellStorage;
 import team.lodestar.fufo.registry.common.FufoPackets;
+<<<<<<< HEAD
 import team.lodestar.fufo.unsorted.handlers.PlayerSpellInventoryHandler;
+=======
+import team.lodestar.fufo.registry.common.magic.FufoPlayerStateKeys;
+import team.lodestar.fufo.registry.common.magic.FufoPlayerStateKeys.FufoPlayerState;
+>>>>>>> 7ddb0685b74a161452b277c2b29ae2bb39e3750f
 import team.lodestar.fufo.unsorted.handlers.ProgressionHandler;
 import team.lodestar.lodestone.helpers.NBTHelper;
 import team.lodestar.lodestone.systems.capability.LodestoneCapability;
 import team.lodestar.lodestone.systems.capability.LodestoneCapabilityProvider;
+
+import java.util.HashMap;
 
 public class FufoPlayerDataCapability implements LodestoneCapability {
 
@@ -34,10 +43,14 @@ public class FufoPlayerDataCapability implements LodestoneCapability {
     });
 
 
+<<<<<<< HEAD
     public PlayerSpellInventoryHandler hotbarHandler = new PlayerSpellInventoryHandler(new SpellHotbar(9));
+=======
+    public PlayerSpellHandler hotbarHandler = new PlayerSpellHandler(new SpellStorage(9));
+>>>>>>> 7ddb0685b74a161452b277c2b29ae2bb39e3750f
     public PipeBuilderAssistant pipeHandler = new PipeBuilderAssistant();
     public ProgressionHandler progressHandler = new ProgressionHandler();
-
+    public FufoPlayerStateKeys.PlayerStateMap<FufoPlayerState> states = new FufoPlayerStateKeys.PlayerStateMap<>();
     public FufoPlayerDataCapability() {
     }
 

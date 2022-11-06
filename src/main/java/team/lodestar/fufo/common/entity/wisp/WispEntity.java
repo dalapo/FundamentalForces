@@ -1,6 +1,7 @@
 package team.lodestar.fufo.common.entity.wisp;
 
 import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.core.Registry;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -8,7 +9,9 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.registries.ForgeRegistries;
 import team.lodestar.fufo.registry.client.FufoParticles;
 import team.lodestar.fufo.registry.common.FufoEntities;
 import net.minecraft.nbt.CompoundTag;
@@ -22,13 +25,15 @@ import team.lodestar.lodestone.systems.easing.Easing;
 import team.lodestar.lodestone.systems.rendering.particle.ParticleBuilders;
 
 import java.awt.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static team.lodestar.lodestone.systems.rendering.particle.SimpleParticleOptions.Animator.WITH_AGE;
 
 public class WispEntity extends AbstractWispEntity {
 
     protected Vec3 gravityCenter = Vec3.ZERO;
-    protected int timeOffset = random.nextInt(200);
+    public int timeOffset = random.nextInt(200);
     public WispEntity(EntityType<?> type, Level level) {
         super(type, level);
     }
@@ -39,7 +44,7 @@ public class WispEntity extends AbstractWispEntity {
 
     public WispEntity(Level level, double posX, double posY, double posZ, double velX, double velY, double velZ) {
         super(FufoEntities.METEOR_FIRE_WISP.get(), level, posX, posY, posZ, velX, velY, velZ);
-        gravityCenter = new Vec3(posX+level.random.nextFloat()-0.5f, posY+2.5f+level.random.nextInt(2), posZ+level.random.nextFloat()-0.5f);
+        gravityCenter = new Vec3(posX+level.random.nextFloat()-0.5f, posY+1.5f+level.random.nextFloat()*2f, posZ+level.random.nextFloat()-0.5f);
     }
 
     @Override
@@ -71,7 +76,7 @@ public class WispEntity extends AbstractWispEntity {
                 stack.shrink(1);
             }
             pPlayer.playSound(SoundEvents.BOTTLE_FILL, 1, 1);
-            ItemHelper.giveItemToEntity(FufoItems.CRACK.asStack(), pPlayer);
+            ItemHelper.giveItemToEntity(FufoItems.BOTTLED_WISP.asStack(), pPlayer);
             discard();
             return InteractionResult.SUCCESS;
         }
@@ -81,16 +86,17 @@ public class WispEntity extends AbstractWispEntity {
     @Override
     public void tick() {
         super.tick();
-        long time = (level.getGameTime() + timeOffset);
-        float sine = Mth.sin(((time*1.5f) % 200L) / 200f) * 0.01f;
+        long time = (level.getGameTime() + timeOffset) * (timeOffset % 2 == 0 ? -1 : 1);
+        float value = (float) (((time * 1.5f) % 400L) / 400f * (Math.PI * 2));
+        float sine = Mth.sin(value) * 0.01f;
         float velocityFactor = 0.1f+ sine;
-        setDeltaMovement(getDeltaMovement().subtract(0, 0.002f, 0).multiply(0.98f, 0.96f, 0.98f));
+        setDeltaMovement(getDeltaMovement().subtract(0, 0.001f, 0).multiply(0.98f, 0.96f, 0.98f));
         Vec3 target = DataHelper.rotatingRadialOffset(gravityCenter, 1.5f, 0, 1, time, 200);
         Vec3 velocity = target.subtract(position()).normalize().multiply(velocityFactor, velocityFactor, velocityFactor);
         float xMotion = (float) Mth.lerp(0.02f, getDeltaMovement().x, velocity.x);
-        float yMotion = (float) Mth.lerp(0.04f, getDeltaMovement().y, velocity.y);
+        float yMotion = (float) Mth.lerp(0.08f, getDeltaMovement().y, velocity.y);
         float zMotion = (float) Mth.lerp(0.03f, getDeltaMovement().z, velocity.z);
-        Vec3 resultingMotion = new Vec3(xMotion, yMotion+sine, zMotion);
+        Vec3 resultingMotion = new Vec3(xMotion, yMotion+sine*0.2f, zMotion);
         setDeltaMovement(resultingMotion);
 
         if (level.isClientSide) {
@@ -119,7 +125,7 @@ public class WispEntity extends AbstractWispEntity {
                         .setColor(startingColor, endingColor)
                         .randomMotion(0.01f)
                         .enableNoClip()
-                        .spawn(level, getX(), getY(), getZ());
+                        .spawn(level, getCenter().x, getCenter().y, getCenter().z);
             }
         }
     }

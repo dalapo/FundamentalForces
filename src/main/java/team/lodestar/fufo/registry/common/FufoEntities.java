@@ -11,12 +11,10 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import team.lodestar.fufo.FufoMod;
-import team.lodestar.fufo.client.rendering.entity.falling.FallingStarRenderer;
 import team.lodestar.fufo.client.rendering.entity.magic.spell.tier0.MissileProjectileRenderer;
 import team.lodestar.fufo.client.rendering.entity.weave.HologramWeaveEntityRenderer;
 import team.lodestar.fufo.client.rendering.entity.weave.WeaveEntityRenderer;
 import team.lodestar.fufo.client.rendering.entity.wisp.WispEntityRenderer;
-import team.lodestar.fufo.common.entity.falling.FallingCrashpodEntity;
 import team.lodestar.fufo.common.entity.magic.spell.tier1.SpellBolt;
 import team.lodestar.fufo.common.entity.weave.HologramWeaveEntity;
 import team.lodestar.fufo.common.entity.weave.WeaveEntity;
@@ -26,9 +24,7 @@ import team.lodestar.fufo.common.entity.wisp.WispEntity;
 public class FufoEntities {
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, FufoMod.FUFO);
 
-    public static final RegistryObject<EntityType<FallingCrashpodEntity>> FALLING_CRASHPOD = register("falling_crashpod", EntityType.Builder.<FallingCrashpodEntity>of((t, l) -> new FallingCrashpodEntity(l), MobCategory.MISC).sized(0.5f, 0.5f));
-
-    public static final RegistryObject<EntityType<WispEntity>> METEOR_FIRE_WISP = register("wisp", EntityType.Builder.<WispEntity>of((t, l) -> new WispEntity(l), MobCategory.MISC).sized(0.5f, 0.5f));
+    public static final RegistryObject<EntityType<WispEntity>> METEOR_FIRE_WISP = register("wisp", EntityType.Builder.<WispEntity>of((t, l) -> new WispEntity(l), MobCategory.MISC).sized(0.75f, 0.75f));
 
     public static final RegistryObject<EntityType<HologramWeaveEntity>> HOLOGRAM_WEAVE = register("hologram_weave", EntityType.Builder.<HologramWeaveEntity>of((t, l) -> new HologramWeaveEntity(l), MobCategory.MISC).sized(1.0F, 1.0F));
     public static final RegistryObject<EntityType<WeaveEntity>> BASIC_WEAVE = register("basic_weave", EntityType.Builder.<WeaveEntity>of((t, l) -> new WeaveEntity(l), MobCategory.MISC).sized(1.0F, 1.0F));
@@ -44,7 +40,6 @@ public class FufoEntities {
     public static class ClientOnly {
         @SubscribeEvent
         public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
-            event.registerEntityRenderer(FufoEntities.FALLING_CRASHPOD.get(), FallingStarRenderer::new);
             event.registerEntityRenderer(FufoEntities.METEOR_FIRE_WISP.get(), WispEntityRenderer::new);
             event.registerEntityRenderer(FufoEntities.HOLOGRAM_WEAVE.get(), HologramWeaveEntityRenderer::new);
             event.registerEntityRenderer(FufoEntities.BASIC_WEAVE.get(), WeaveEntityRenderer::new);

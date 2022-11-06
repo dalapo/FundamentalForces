@@ -9,6 +9,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
+import team.lodestar.fufo.common.packets.spell.TriggerDashJumpPacket;
+import team.lodestar.fufo.common.packets.spell.TriggerDashPacket;
 
 import static team.lodestar.fufo.FufoMod.FUFO;
 import static team.lodestar.fufo.FufoMod.fufoPath;
@@ -27,5 +29,7 @@ public class FufoPackets {
         FufoEntityCapabilitySyncPacket.register(INSTANCE, index++);
         FufoWorldCapabilitySyncPacket.register(INSTANCE, index++);
         SyncSpellCooldownPacket.register(INSTANCE, index++);
+        TriggerDashPacket.register(INSTANCE, index++);
+        TriggerDashJumpPacket.register(INSTANCE, index++);
     }
 }

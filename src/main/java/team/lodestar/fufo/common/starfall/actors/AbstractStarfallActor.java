@@ -2,7 +2,7 @@ package team.lodestar.fufo.common.starfall.actors;
 
 import net.minecraft.util.RandomSource;
 import team.lodestar.fufo.common.capability.FufoChunkDataCapability;
-import team.lodestar.fufo.common.starfall.StarfallSafetyHandler;
+import team.lodestar.fufo.common.starfall.StarfallSafetyManager;
 import team.lodestar.fufo.config.CommonConfig;
 import team.lodestar.lodestone.helpers.BlockHelper;
 import net.minecraft.core.BlockPos;
@@ -47,8 +47,8 @@ public abstract class AbstractStarfallActor {
         if (!level.isInWorldBounds(pos)) {
             return false;
         }
-        boolean heightmap = StarfallSafetyHandler.chunkChangesCheck(level, pos, 2);
-        boolean blocks = StarfallSafetyHandler.stateTagCheck(level, StarfallSafetyHandler.nearbyBlockList(level, pos));
+        boolean heightmap = StarfallSafetyManager.chunkChangesCheck(level, pos, 2);
+        boolean blocks = StarfallSafetyManager.stateTagCheck(level, StarfallSafetyManager.nearbyBlockList(level, pos));
         return heightmap && blocks;
     }
 
@@ -59,7 +59,7 @@ public abstract class AbstractStarfallActor {
         int xOffset = Mth.nextInt(random, minOffset, maxOffset) * (random.nextBoolean() ? 1 : -1);
         int zOffset = Mth.nextInt(random, minOffset, maxOffset) * (random.nextBoolean() ? 1 : -1);
         BlockPos offsetPos = centerPos.offset(xOffset, 0, zOffset);
-        return StarfallSafetyHandler.heightmapPosAt(MOTION_BLOCKING_NO_LEAVES, level, offsetPos);
+        return StarfallSafetyManager.heightmapPosAt(MOTION_BLOCKING_NO_LEAVES, level, offsetPos);
     }
 
     public Vec3 getStarfallStartPosition(ServerLevel level, BlockPos targetPos, BlockPos centerPos) {
@@ -68,6 +68,6 @@ public abstract class AbstractStarfallActor {
         double distance = targetVec.distanceTo(centerVec) * (Mth.nextDouble(level.random, 0.5f, 5f));
         Vec3 direction = targetVec.vectorTo(centerVec).normalize().yRot(Mth.nextFloat(level.random, -0.26f, 0.26f)).multiply(distance, 1, distance);
         Vec3 spawnVec = centerVec.add(direction);
-        return BlockHelper.fromBlockPos(StarfallSafetyHandler.heightmapPosAt(MOTION_BLOCKING_NO_LEAVES, level, new BlockPos(spawnVec))).add(0, CommonConfig.STARFALL_SPAWN_HEIGHT.getConfigValue(), 0);
+        return BlockHelper.fromBlockPos(StarfallSafetyManager.heightmapPosAt(MOTION_BLOCKING_NO_LEAVES, level, new BlockPos(spawnVec))).add(0, CommonConfig.STARFALL_SPAWN_HEIGHT.getConfigValue(), 0);
     }
 }

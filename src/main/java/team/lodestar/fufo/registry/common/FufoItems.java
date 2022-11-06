@@ -14,6 +14,7 @@ public class FufoItems {
     public static final ItemEntry<Item> CRACK = setupItem("crack").register();
     public static final ItemEntry<Item> DEPLETED_ORTUSITE_CHUNK = setupItem("depleted_ortusite_chunk").register();
     public static final ItemEntry<Item> ORTUSITE_CHUNK = setupItem("ortusite_chunk").tag(FufoTags.METEOR_FLAME_CATALYST).register();
+    public static final ItemEntry<Item> BOTTLED_WISP = setupItem("bottled_wisp").register();
     public static final ItemEntry<DevTool> DEV_TOOL = setupItem("dev_tool", DevTool::new).register();
     public static final ItemEntry<DebugTool> DEBUG_TOOL = setupItem("debug_tool", DebugTool::new).register();
 

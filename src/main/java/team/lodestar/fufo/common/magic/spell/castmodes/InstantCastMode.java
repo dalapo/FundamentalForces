@@ -1,8 +1,8 @@
 package team.lodestar.fufo.common.magic.spell.castmodes;
 
 
-import team.lodestar.fufo.core.spell.SpellCastMode;
-import team.lodestar.fufo.core.spell.SpellInstance;
+import team.lodestar.fufo.core.magic.spell.SpellCastMode;
+import team.lodestar.fufo.core.magic.spell.SpellInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;

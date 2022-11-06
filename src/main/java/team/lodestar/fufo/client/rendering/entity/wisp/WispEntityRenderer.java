@@ -29,12 +29,6 @@ import static team.lodestar.lodestone.handlers.RenderHandler.DELAYED_RENDER;
 
 public class WispEntityRenderer extends EntityRenderer<WispEntity> {
 
-    private static final ResourceLocation WISP = FufoMod.fufoPath("textures/entity/wisp/wisp_glimmer.png");
-    private static final RenderType WISP_TYPE = LodestoneRenderTypeRegistry.TRANSPARENT_TEXTURE.apply(WISP);
-
-    private static final ResourceLocation WISP_TRAIL = FufoMod.fufoPath("textures/entity/wisp/wisp_trail.png");
-    private static final RenderType WISP_TRAIL_TYPE = LodestoneRenderTypeRegistry.TRANSPARENT_TEXTURE_TRIANGLE.apply(WISP_TRAIL);
-
     public WispEntityRenderer(EntityRendererProvider.Context p_174008_) {
         super(p_174008_);
     }
@@ -56,11 +50,11 @@ public class WispEntityRenderer extends EntityRenderer<WispEntity> {
         float y = (float) Mth.lerp(partialTicks, entity.yOld, entity.getY());
         float z = (float) Mth.lerp(partialTicks, entity.zOld, entity.getZ());
         if (positions.size() > 1) {
-            positions.set(positions.size() - 1, new EntityHelper.PastPosition(new Vec3(x, y, z).add(entity.getDeltaMovement().multiply(partialTicks, partialTicks, partialTicks)), 0));
+            positions.set(positions.size() - 1, new EntityHelper.PastPosition(new Vec3(x, y+entity.getBbHeight()/2f, z).add(entity.getDeltaMovement().multiply(partialTicks, partialTicks, partialTicks)), 0));
         }
         List<Vector4f> mappedPastPositions = positions.stream().map(p -> p.position).map(p -> new Vector4f((float) p.x, (float) p.y, (float) p.z, 1)).collect(Collectors.toList());
 
-        Color color = new Color(219, 88, 239);
+        Color color = new Color(223, 92, 245);
         VFXBuilders.WorldVFXBuilder trailBuilder = VFXBuilders.createWorld().setPosColorTexLightmapDefaultFormat().setColor(color).setOffset(-x, -y, -z);
         VFXBuilders.WorldVFXBuilder builder = VFXBuilders.createWorld().setPosColorTexLightmapDefaultFormat().setColor(color);
         poseStack.pushPose();
@@ -68,12 +62,17 @@ public class WispEntityRenderer extends EntityRenderer<WispEntity> {
         trailBuilder.renderTrail(DELAYED_RENDER.getBuffer(STAR_TRAIL_TYPE), poseStack, mappedPastPositions, f -> 0.25f, f -> trailBuilder.setAlpha(Math.max(0, Easing.SINE_IN.ease(f, 0, 0.5f, 1))));
         trailBuilder.renderTrail(DELAYED_RENDER.getBuffer(STAR_TRAIL_TYPE), poseStack, mappedPastPositions, f -> 0.1f, f -> trailBuilder.setAlpha(Math.max(0, Easing.SINE_IN.ease(f, 0, 0.75f, 1))));
 
+        poseStack.translate(0, entity.getBbHeight()/2f, 0);
         poseStack.mulPose(Minecraft.getInstance().getEntityRenderDispatcher().cameraOrientation());
         poseStack.mulPose(Vector3f.YP.rotationDegrees(180f));
 
-        builder.setAlpha(0.5f).renderQuad(DELAYED_RENDER.getBuffer(STAR_TYPE), poseStack, 0.8f);
-        builder.setAlpha(0.75f).renderQuad(DELAYED_RENDER.getBuffer(STAR_TYPE), poseStack, 0.4f);
-        builder.setColor(color.brighter()).setAlpha(1).renderQuad(DELAYED_RENDER.getBuffer(STAR_TYPE), poseStack, 0.25f);
+        long time = (entity.level.getGameTime() + entity.timeOffset);
+        float pValue = (float) (((time * 1.5f) % 200L) / 200f * (Math.PI * 2));
+        float sine = Mth.sin(pValue) * 0.1f;
+        float sizeMultiplier = (float) (1f + sine + Math.pow(sine*3, 2));
+        builder.setAlpha(0.5f).renderQuad(DELAYED_RENDER.getBuffer(STAR_TYPE), poseStack, 0.8f*sizeMultiplier);
+        builder.setAlpha(0.75f).renderQuad(DELAYED_RENDER.getBuffer(STAR_TYPE), poseStack, 0.4f*sizeMultiplier);
+        builder.setColor(color.brighter()).setAlpha(1).renderQuad(DELAYED_RENDER.getBuffer(STAR_TYPE), poseStack, 0.25f*sizeMultiplier);
 
         RenderSystem.disableBlend();
         poseStack.popPose();
@@ -81,6 +80,6 @@ public class WispEntityRenderer extends EntityRenderer<WispEntity> {
 
     @Override
     public ResourceLocation getTextureLocation(WispEntity p_114482_) {
-        return WISP;
+        return STAR;
     }
 }

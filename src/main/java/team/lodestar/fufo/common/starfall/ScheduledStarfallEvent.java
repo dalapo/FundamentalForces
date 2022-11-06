@@ -29,6 +29,7 @@ public class ScheduledStarfallEvent extends WorldEventInstance {
     public ScheduledStarfallEvent(StarfallData starfallData) {
         super(FufoWorldEventTypes.SCHEDULED_STARFALL);
         this.starfallData = starfallData;
+        this.countdown = starfallData.startingCountdown;
     }
 
     public ScheduledStarfallEvent(StarfallData starfallData, BlockPos targetedPos) {

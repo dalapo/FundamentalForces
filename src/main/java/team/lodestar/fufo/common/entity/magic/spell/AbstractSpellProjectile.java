@@ -1,6 +1,6 @@
 package team.lodestar.fufo.common.entity.magic.spell;
 
-import team.lodestar.fufo.core.element.MagicElement;
+import team.lodestar.fufo.core.magic.MagicElementType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -30,7 +30,7 @@ public class AbstractSpellProjectile extends Projectile {
     protected static final EntityDataAccessor<Integer> DATA_COLOR = SynchedEntityData.defineId(AbstractSpellProjectile.class, EntityDataSerializers.INT);
     protected static final EntityDataAccessor<Integer> DATA_END_COLOR = SynchedEntityData.defineId(AbstractSpellProjectile.class, EntityDataSerializers.INT);
 
-    public MagicElement element;
+    public MagicElementType element;
     public Color startColor = Color.WHITE;
     public Color endColor = Color.BLACK;
     public int lifetime;
@@ -82,7 +82,7 @@ public class AbstractSpellProjectile extends Projectile {
         return this;
     }
 
-    public AbstractSpellProjectile setElement(MagicElement element) {
+    public AbstractSpellProjectile setElement(MagicElementType element) {
         this.element = element;
         return this;
     }

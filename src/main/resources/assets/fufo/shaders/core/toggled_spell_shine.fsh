@@ -15,5 +15,5 @@ out vec4 fragColor;
 
 void main() {
     vec3 col = texture(Sampler0, texCoord0).xyz * sin(texCoord0.y*ShineCount+(GameTime*Speed));
-    fragColor = vec4(col, 1) * ColorModulator;
+    fragColor = vec4(col, 1) * vertexColor * ColorModulator;
 }

@@ -11,6 +11,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.Vec3;
+import team.lodestar.lodestone.helpers.VecHelper;
 
 import static net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING_NO_LEAVES;
 
@@ -68,6 +69,6 @@ public abstract class AbstractStarfallActor {
         double distance = targetVec.distanceTo(centerVec) * (Mth.nextDouble(level.random, 0.5f, 5f));
         Vec3 direction = targetVec.vectorTo(centerVec).normalize().yRot(Mth.nextFloat(level.random, -0.26f, 0.26f)).multiply(distance, 1, distance);
         Vec3 spawnVec = centerVec.add(direction);
-        return BlockHelper.fromBlockPos(StarfallSafetyManager.heightmapPosAt(MOTION_BLOCKING_NO_LEAVES, level, new BlockPos(spawnVec))).add(0, CommonConfig.STARFALL_SPAWN_HEIGHT.getConfigValue(), 0);
+        return VecHelper.fromBlockPos(StarfallSafetyManager.heightmapPosAt(MOTION_BLOCKING_NO_LEAVES, level, new BlockPos(spawnVec))).add(0, CommonConfig.STARFALL_SPAWN_HEIGHT.getConfigValue(), 0);
     }
 }

@@ -11,6 +11,7 @@ import net.minecraft.world.phys.Vec3;
 import team.lodestar.fufo.FufoMod;
 import team.lodestar.fufo.common.fluid.PipeNodeBlockEntity;
 import team.lodestar.lodestone.helpers.BlockHelper;
+import team.lodestar.lodestone.helpers.VecHelper;
 import team.lodestar.lodestone.setup.LodestoneRenderTypeRegistry;
 import team.lodestar.lodestone.systems.rendering.VFXBuilders;
 
@@ -32,9 +33,9 @@ public class AnchorRenderer<T extends PipeNodeBlockEntity> implements BlockEntit
         poseStack.pushPose();
         poseStack.translate(0.5, 0.5, 0.5);
         blockEntityIn.nearbyAnchorPositions.forEach(anchor -> {
-            VFXBuilders.createWorld().setPosColorTexLightmapDefaultFormat().renderBeam(beamConsumer, poseStack, BlockHelper.fromBlockPos(blockEntityIn.getBlockPos()), BlockHelper.fromBlockPos(anchor), 0.1f);
+            VFXBuilders.createWorld().setPosColorTexLightmapDefaultFormat().renderBeam(beamConsumer, poseStack, VecHelper.fromBlockPos(blockEntityIn.getBlockPos()), VecHelper.fromBlockPos(anchor), 0.1f);
         });
-        Vec3 start = BlockHelper.fromBlockPos(blockEntityIn.getBlockPos());
+        Vec3 start = VecHelper.fromBlockPos(blockEntityIn.getBlockPos());
         Vec3 end = start.add(0, blockEntityIn.getStoredFluid().getAmount()/50.0, 0);
         VFXBuilders.createWorld().setPosColorTexLightmapDefaultFormat().setColor(blockEntityIn.isOpen() ? Color.red : Color.blue).renderBeam(beamConsumer, poseStack, start, end, 0.1f);
         poseStack.popPose();

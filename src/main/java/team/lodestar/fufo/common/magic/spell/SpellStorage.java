@@ -1,11 +1,12 @@
 package team.lodestar.fufo.common.magic.spell;
 
+import team.lodestar.fufo.client.ui.spellinventory.SpellInventory;
 import team.lodestar.fufo.core.magic.spell.SpellInstance;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 
-public class SpellStorage {
+public class SpellStorage implements SpellInventory {
     public final int size;
     public final NonNullList<SpellInstance> spells;
 
@@ -48,4 +49,14 @@ public class SpellStorage {
             }
         }
     }
+
+	@Override
+	public void setSpell(int slot, SpellInstance spell) {
+		spells.set(slot, spell);
+	}
+
+	@Override
+	public int getNumSpells() {
+		return size;
+	}
 }

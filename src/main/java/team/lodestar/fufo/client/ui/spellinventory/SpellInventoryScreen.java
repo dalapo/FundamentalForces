@@ -18,13 +18,25 @@ public class SpellInventoryScreen extends Screen {
 	private static int imageWidth = 176;
 	private static int imageHeight = 166;
 	
+	private SpellContainer container;
+	
 //	private static ResourceLocation SPELL_INVENTORY = new ResourceLocation(FufoMod.FUFO, "/textures/ui/spellinventory/gui_blank.png");
 	
-	public SpellInventoryScreen(Component title, Player player) {
+	public SpellInventoryScreen(Component title, SpellContainer container, Player player) {
 		super(title);
+		this.container = container;
 	}
 	
 	FlexBox screen;
+	
+	@Override
+	public boolean isPauseScreen() {
+		return false;
+	}
+	
+	public SpellContainer getContainer() {
+		return container;
+	}
 	
 	@Override
 	protected void init() {

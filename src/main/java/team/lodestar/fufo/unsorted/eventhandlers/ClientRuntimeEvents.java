@@ -18,6 +18,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import team.lodestar.fufo.FufoMod;
+import team.lodestar.fufo.client.ui.spellinventory.SpellContainer;
 import team.lodestar.fufo.client.ui.spellinventory.SpellInventoryScreen;
 import team.lodestar.fufo.common.capability.FufoPlayerDataCapability;
 import team.lodestar.fufo.common.effect.UltrakillMovementEffect;
@@ -52,10 +53,11 @@ public class ClientRuntimeEvents {
     
     @SubscribeEvent
     public static void interceptInventoryOpening(ScreenEvent event) {
+    	FufoPlayerDataCapability cap = FufoPlayerDataCapability.getCapability(Minecraft.getInstance().player);
     	if (event.getScreen() instanceof InventoryScreen && FufoPlayerDataCapability.getCapability(Minecraft.getInstance().player).hotbarHandler.isSpellHotbarOpen) {
     		FufoMod.LOGGER.info("Intercepting");
     		LocalPlayer player = Minecraft.getInstance().player;
-    		Minecraft.getInstance().setScreen(new SpellInventoryScreen(Component.translatable("Spell Inventory"), player));
+    		Minecraft.getInstance().setScreen(new SpellInventoryScreen(Component.translatable("Spell Inventory"), new SpellContainer(1, 9, cap.hotbarHandler.spellStorage), player));
     		event.setCanceled(true);
     	}
     }

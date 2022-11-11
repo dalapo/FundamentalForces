@@ -23,6 +23,7 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import org.lwjgl.opengl.GL11;
 import team.lodestar.fufo.FufoMod;
+import team.lodestar.fufo.client.ui.spellinventory.SpellContainer;
 import team.lodestar.fufo.common.capability.FufoPlayerDataCapability;
 import team.lodestar.fufo.common.magic.spell.effects.ToggledEffect;
 import team.lodestar.fufo.core.magic.spell.SpellInstance;
@@ -47,8 +48,14 @@ public class PlayerSpellHandler {
 
     public PlayerSpellHandler(SpellStorage spellStorage) {
         this.spellStorage = spellStorage;
-        }
+    }
 
+    // TODO: Cache the SpellContainer as a singleton instance to prevent memory leaks
+    // Honestly how does Vanilla do it these days?
+    public SpellContainer getContainer() {
+    	return new SpellContainer(4, 9, spellStorage);
+    }
+    
     public static void playerInteract(PlayerInteractEvent.RightClickBlock event) {
         if (event.getHand().equals(InteractionHand.MAIN_HAND)) {
             if (event.getEntity() instanceof ServerPlayer serverPlayer) {

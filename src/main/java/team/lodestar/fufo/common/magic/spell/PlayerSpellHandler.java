@@ -246,10 +246,10 @@ public class PlayerSpellHandler {
                                 }
                                 if (instance.isToggledEffectActive()) {
                                     extraBuilder.setPositionWithWidth(x, y, 20, 22);
-                                    spellShine.safeGetUniform("Speed").set(1500f);
-                                    spellShine.safeGetUniform("ShineCount").set(8f);
+                                    spellShine.safeGetUniform("Speed").set(750f);
                                     RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
                                     extraBuilder.setShader(FufoShaders.TOGGLED_SPELL_SHINE.getInstance()).setAlpha(0.4f).setShaderTexture(background).draw(poseStack);
+                                    RenderSystem.defaultBlendFunc();
                                 }
                             }
                         }

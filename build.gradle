@@ -140,8 +140,8 @@ dependencies {
     }
     implementation fg.deobf("com.tterrag.registrate:Registrate:${registrateVersion}")
 
-    implementation fg.deobf("team.lodestar.lodestone:lodestone:${minecraftVersion}-${project.lodestoneVersion}")
-    //    implementation fg.deobf("team.lodestar.sage:sage:${project.sageVersion}-${project.lodestoneVersion}")
+//    implementation fg.deobf("team.lodestar.lodestone:lodestone:${minecraftVersion}-${project.lodestoneVersion}")
+    implementation fg.deobf("team.lodestar.sage:sage:${project.sageVersion}-${project.lodestoneVersion}")
     implementation fg.deobf("team.lodestar.sage:sage:${project.sageVersion}")
 }
 

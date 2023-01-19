@@ -8,8 +8,7 @@ import team.lodestar.fufo.core.fluid.FlowDir;
 import team.lodestar.fufo.core.fluid.FluidPipeNetwork;
 import team.lodestar.fufo.core.fluid.PipeNode;
 import team.lodestar.fufo.core.fluid.PressureSource;
-import team.lodestar.fufo.unsorted.util.Debuggable;
-import team.lodestar.fufo.unsorted.util.DevToolResponse;
+import team.lodestar.fufo.unsorted.util.DevSpellResponder;
 import team.lodestar.lodestone.helpers.BlockHelper;
 import team.lodestar.lodestone.systems.blockentity.LodestoneBlockEntity;
 
@@ -38,7 +37,7 @@ import org.apache.commons.lang3.tuple.Triple;
 import static team.lodestar.fufo.unsorted.ForcesThatAreActuallyFundamental.g;
 
 @SuppressWarnings("unused")
-public class PipeNodeBlockEntity extends LodestoneBlockEntity implements PipeNode, Debuggable, DevToolResponse {
+public class PipeNodeBlockEntity extends LodestoneBlockEntity implements PipeNode, DevSpellResponder {
 
 	private static final int RANGE = 10;
 
@@ -330,7 +329,7 @@ public class PipeNodeBlockEntity extends LodestoneBlockEntity implements PipeNod
 	}
 
 	@Override
-	public String getDebugMessage(boolean sneak) {
+	public String speakToDev(boolean sneak) {
 		if (sneak) {
 			if (getNetwork() != null) return getNetwork().getInfo();
 			else return "No network; either this is client-side or something has gone wrong";
@@ -364,7 +363,7 @@ public class PipeNodeBlockEntity extends LodestoneBlockEntity implements PipeNod
 	}
 
 	@Override
-	public void onDevTool(UseOnContext context) {
+	public void respondToDev(UseOnContext context) {
 
 		if (context.getPlayer().isShiftKeyDown() && FluidPipeNetwork.MANUAL_TICKING) {
     		if (getNetwork() != null) getNetwork().tick();

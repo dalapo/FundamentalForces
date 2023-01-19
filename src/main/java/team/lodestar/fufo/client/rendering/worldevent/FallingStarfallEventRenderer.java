@@ -3,7 +3,9 @@ package team.lodestar.fufo.client.rendering.worldevent;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 import com.mojang.math.Vector4f;
+import team.lodestar.fufo.client.rendering.postprocess.WorldHighlightFx;
 import team.lodestar.fufo.common.starfall.FallingStarfallEvent;
+import team.lodestar.fufo.registry.client.FufoPostProcessingEffects;
 import team.lodestar.lodestone.helpers.ColorHelper;
 import team.lodestar.lodestone.helpers.EntityHelper;
 import team.lodestar.lodestone.setup.LodestoneRenderTypeRegistry;
@@ -52,7 +54,6 @@ public class FallingStarfallEventRenderer extends WorldEventRenderer<FallingStar
         float xPos = (float) Mth.lerp(partialTicks, oldStarfallPosition.x, starfallPosition.x);
         float yPos = (float) Mth.lerp(partialTicks, oldStarfallPosition.y, starfallPosition.y);
         float zPos = (float) Mth.lerp(partialTicks, oldStarfallPosition.z, starfallPosition.z);
-        Vec3 lerpedPosition = new Vec3(xPos, yPos, zPos);
         if (positions.size() > 1) {
             for (int i = 0; i < positions.size() - 2; i++) {
                 EntityHelper.PastPosition position = positions.get(i);
@@ -64,29 +65,35 @@ public class FallingStarfallEventRenderer extends WorldEventRenderer<FallingStar
             }
         }
 
-//        float length = instance.startingHeight - instance.atmosphericEntryHeight;
-//        double progress = instance.position.y - instance.atmosphericEntryHeight;
-//        float atmosphericEntry = (float) Math.max(0, (progress / length));
-//        float min = Math.min(1f, atmosphericEntry);
         List<Vector4f> mappedPastPositions = positions.stream().map(p -> p.position).map(p -> new Vector4f((float) p.x, (float) p.y, (float) p.z, 1)).collect(Collectors.toList());
         VFXBuilders.WorldVFXBuilder builder = VFXBuilders.createWorld().setPosColorTexLightmapDefaultFormat();
-        float flareSize = 8f;
-        poseStack.pushPose();
 
+        renderTrail(builder, poseStack, mappedPastPositions);
+        renderStar(builder, poseStack, xPos, yPos, zPos);
+
+        FallingStarfallEvent.ClientOnly.updateHighlightFx(instance);
+    }
+
+    public static void renderTrail(VFXBuilders.WorldVFXBuilder builder, PoseStack poseStack, List<Vector4f> mappedPastPositions) {
         for (int i = 0; i < 5; i++) {
             float lerp = (float) (i / 4.0);
             Color color = ColorHelper.multicolorLerp(Easing.SINE_IN, lerp, Color.WHITE, Color.MAGENTA, Color.MAGENTA, Color.RED);
             float size = 1f + i * 2f;
             float alpha = (1f - i * 0.1f);
-            builder.setColor(color).renderTrail(DELAYED_RENDER.getBuffer(STAR_TRAIL_TYPE), poseStack, mappedPastPositions, f -> size, f -> builder.setColor(ColorHelper.colorLerp(Easing.SINE_OUT, 1-f, color, Color.RED)).setAlpha(Math.max(0, Easing.SINE_IN.ease(f, 0, alpha, 1))));
+            builder.setColor(color).renderTrail(DELAYED_RENDER.getBuffer(STAR_TRAIL_TYPE), poseStack, mappedPastPositions, f -> size, f -> builder.setColor(ColorHelper.colorLerp(Easing.SINE_OUT, 1 - f, color, Color.RED)).setAlpha(Math.max(0, Easing.SINE_IN.ease(f, 0, alpha, 1))));
         }
-        poseStack.translate(lerpedPosition.x, lerpedPosition.y, lerpedPosition.z);
+    }
+
+    public static void renderStar(VFXBuilders.WorldVFXBuilder builder, PoseStack poseStack, float xPos, float yPos, float zPos) {
+        poseStack.pushPose();
+        poseStack.translate(xPos, yPos, zPos);
         poseStack.mulPose(Minecraft.getInstance().getEntityRenderDispatcher().cameraOrientation());
         poseStack.mulPose(Vector3f.YP.rotationDegrees(180f));
+        float flareSize = 8f;
         for (int i = 0; i < 4; i++) {
             float lerp = (float) (i / 3.0);
             Color color = ColorHelper.multicolorLerp(Easing.SINE_IN, lerp, Color.WHITE, Color.MAGENTA, Color.RED);
-            float size = flareSize + i*5f;
+            float size = flareSize + i * 5f;
             float alpha = (1f - i * 0.2f);
             builder.setColor(color).setAlpha(alpha).renderQuad(DELAYED_RENDER.getBuffer(STAR_TYPE), poseStack, size);
         }

@@ -11,9 +11,6 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import org.apache.commons.lang3.tuple.Triple;
-
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
@@ -33,7 +30,7 @@ public class PumpBlockEntity extends PipeNodeBlockEntity implements PressureSour
 	private PipeNode back;
 	private PipeNode front;
 	private double force;
-	
+
 	public PumpBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
 
@@ -45,7 +42,7 @@ public class PumpBlockEntity extends PipeNodeBlockEntity implements PressureSour
 		super.onPlace(placer, stack);
 //		BlockPos prevPos = PipeBuilderAssistant.INSTANCE.prevAnchorPos;
 	}
-	
+
 	@Override
 	public boolean addConnection(BlockPos bp) {
 //		Minecraft.getInstance().mouseHandler.releaseMouse();
@@ -53,12 +50,10 @@ public class PumpBlockEntity extends PipeNodeBlockEntity implements PressureSour
 			if (back == null) {
 				back = other;
 				backPos = bp;
-			}
-			else if (front == null) {
+			} else if (front == null) {
 				front = other;
 				frontPos = bp;
-			}
-			else return false; // if back and front are both spoken for reject the connection
+			} else return false; // if back and front are both spoken for reject the connection
 			nearbyAnchorPositions.add(bp);
 			if (getNetwork() == null) setNetwork(other.getNetwork(), false, true);
 			else getNetwork().mergeWith(other.getNetwork());
@@ -67,17 +62,18 @@ public class PumpBlockEntity extends PipeNodeBlockEntity implements PressureSour
 		}
 		return false;
 	}
-	
+
 	@Override
 	public void onLoad() {
 		super.onLoad();
-		if (backPos != null) back = (PipeNode)level.getBlockEntity(backPos);
-		if (frontPos != null) front = (PipeNode)level.getBlockEntity(frontPos);
+		if (backPos != null) back = (PipeNode) level.getBlockEntity(backPos);
+		if (frontPos != null) front = (PipeNode) level.getBlockEntity(frontPos);
 //		FufoMod.LOGGER.info("Successfully loaded back and front!");
 	}
-	
+
 	private BlockPos backPos;
 	private BlockPos frontPos;
+
 	@Override
 	public void load(CompoundTag pTag) {
 		super.load(pTag);
@@ -85,7 +81,7 @@ public class PumpBlockEntity extends PipeNodeBlockEntity implements PressureSour
 		if (pTag.contains("front")) frontPos = BlockPos.of(pTag.getLong("front"));
 //		FufoMod.LOGGER.info(String.format("Successfully loaded positions %s and %s from NBT", backPos, frontPos));
 	}
-	
+
 	private void flip() {
 		if (!level.isClientSide) {
 			getNetwork().removeSource(this, false);
@@ -98,34 +94,33 @@ public class PumpBlockEntity extends PipeNodeBlockEntity implements PressureSour
 		}
 		BlockHelper.updateAndNotifyState(level, getPos());
 	}
-	
-	@Override
-    protected void saveAdditional(CompoundTag pTag) {
-        super.saveAdditional(pTag);
 
-        if (backPos != null) pTag.putLong("back", backPos.asLong()); 
-        if (frontPos != null) pTag.putLong("front", frontPos.asLong());
-    }
-	
+	@Override
+	protected void saveAdditional(CompoundTag pTag) {
+		super.saveAdditional(pTag);
+
+		if (backPos != null) pTag.putLong("back", backPos.asLong());
+		if (frontPos != null) pTag.putLong("front", frontPos.asLong());
+	}
+
 	@Override
 	public double getPressure() {
 		FufoMod.LOGGER.warn("Calling the wrong getPressure method!");
 //		Thread.dumpStack();
 		return force;
 	}
-	
+
 	@Override
 	public List<PipeNode> getConnectedNodes(@Nonnull FlowDir dir) {
 		if (dir == FlowDir.IN) {
 			if (back == null) return List.of();
 			else return List.of(back);
-		}
-		else {
+		} else {
 			if (front == null) return List.of();
 			else return List.of(front);
 		}
 	}
-	
+
 	@Override
 	public double getPressure(FlowDir dir) {
 		double p = (dir == FlowDir.OUT ? force : -force);
@@ -149,20 +144,18 @@ public class PumpBlockEntity extends PipeNodeBlockEntity implements PressureSour
 	public int getForce(FlowDir dir) {
 		if (back == null || front == null) return 0;
 		// TODO Auto-generated method stub
-		return (int)(dir == FlowDir.OUT ? force : -force);
+		return (int) (dir == FlowDir.OUT ? force : -force);
 	}
-	
+
 	@Override
-	public String getDebugMessage(boolean sneak) {
-		String msg = super.getDebugMessage(sneak);
+	public String speakToDev(boolean sneak) {
+		String msg = super.speakToDev(sneak);
 		String io = String.format("In: %s @ %s / Out: %s @ %s\n", backPos, getPressure(FlowDir.IN), frontPos, getPressure(FlowDir.OUT));
 		return msg + "\n" + io;
 	}
-	
+
 	@Override
-	public void onDevTool(UseOnContext ctx) {
+	public void respondToDev(UseOnContext ctx) {
 		flip();
 	}
-	
-	
 }

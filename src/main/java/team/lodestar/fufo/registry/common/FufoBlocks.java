@@ -128,7 +128,6 @@ public class FufoBlocks {
             .blockstate((ctx, p) -> p.horizontalBlock(ctx.get(), p.models().getExistingFile(fufoPath("block/crude_primer"))))
             .register();
     public static final BlockEntry<CrudeNeedleBlock<CrudeNeedleBlockEntity>> CRUDE_NEEDLE = setupItemBlock("crude_needle", (p) -> new CrudeNeedleBlock<>(p).<CrudeNeedleBlock<CrudeNeedleBlockEntity>>setBlockEntity(FufoBlockEntities.CRUDE_NEEDLE), FufoBlockProperties.CRUDE_PROPERTIES()).blockstate(invisibleState()).register();
-    public static final BlockEntry<UITestBlock<UITestBlockEntity>> UI_TEST = setupItemBlock("ui_test", (p) -> new UITestBlock<>(p).<UITestBlock<UITestBlockEntity>>setBlockEntity(FufoBlockEntities.UI_TEST_BLOCK), FufoBlockProperties.CRUDE_PROPERTIES()).blockstate(invisibleState()).register();
 
     public static final BlockEntry<MeteorFlameBlock<MeteorFlameBlockEntity>> METEOR_FIRE = setupBlock("meteor_fire", (p) -> new MeteorFlameBlock<>(p).<MeteorFlameBlock<MeteorFlameBlockEntity>>setBlockEntity(FufoBlockEntities.METEOR_FLAME), FufoBlockProperties.METEOR_FIRE_PROPERTIES()).blockstate(predefinedState()).register();
     public static final BlockEntry<FlammableMeteoriteBlock> ORTUSITE = setupItemBlock("ortusite", (p) -> new FlammableMeteoriteBlock(p, (s, b) -> METEOR_FIRE.getDefaultState()), FufoBlockProperties.ASTEROID_PROPERTIES())

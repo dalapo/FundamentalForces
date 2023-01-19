@@ -118,6 +118,7 @@ public class PipeBuilderAssistant implements IPlacementAssistant {
         }
     }
 
+    @OnlyIn(value = Dist.CLIENT)
     @Override
     public void showPassiveAssistance(ClientLevel level, @Nullable BlockHitResult hit) {
         if (currentNodePosition != null) {

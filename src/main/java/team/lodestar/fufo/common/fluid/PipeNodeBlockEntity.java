@@ -178,7 +178,7 @@ public class PipeNodeBlockEntity extends LodestoneBlockEntity implements PipeNod
     
     @Override
     public void onPlace(LivingEntity placer, ItemStack stack) {
-    	BlockPos prevPos = PipeBuilderAssistant.INSTANCE.previousNodePosition; //TODO: move this to a generic area ran by all implementations of PipeNode
+    	BlockPos prevPos = PipeBuilderAssistant.INSTANCE.oldPipeNodePos; //TODO: move this to a generic area ran by all implementations of PipeNode
     	if (!level.isClientSide() && prevPos != null && level.getBlockEntity(prevPos) instanceof PipeNode prev && prev.getNetwork() != null) {
     		addConnection(prevPos);
     		prev.addConnection(getPos());

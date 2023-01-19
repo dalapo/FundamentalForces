@@ -75,7 +75,7 @@ public class FufoSpellTypes {
                     public void blockEffect(SpellInstance spell, ServerPlayer player, BlockHitResult result) {
                         BlockEntity te = player.level.getBlockEntity(result.getBlockPos());
                         if (te instanceof DevSpellResponder dev) {
-                            dev.speakToDev(player.isCrouching());
+                            FufoMod.LOGGER.debug(dev.speakToDev(player.isCrouching()));
                         }
                     }
                 })

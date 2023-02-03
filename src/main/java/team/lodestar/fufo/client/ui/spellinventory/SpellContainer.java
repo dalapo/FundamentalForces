@@ -24,6 +24,11 @@ public class SpellContainer {
 	public SpellContainer(int rows, int cols, int tX, int tY, SpellInventory inventory) {
 		slots = new SpellSlot[inventory.getNumSpells()];
 		if (inventory.getNumSpells() != (rows * cols)) throw new IllegalArgumentException("Given number of inventory slots does not match given container size!");
+		for (int i=0; i<rows; i++) {
+			for (int j=0; j<cols; j++) {
+				slots[i*rows + j] = new SpellSlot(tX + j*18, tY + i*18);
+			}
+		}
 	}
 	
 	/**

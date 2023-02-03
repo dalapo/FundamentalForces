@@ -53,12 +53,14 @@ public class ClientRuntimeEvents {
     
     @SubscribeEvent
     public static void interceptInventoryOpening(ScreenEvent event) {
-    	FufoPlayerDataCapability cap = FufoPlayerDataCapability.getCapability(Minecraft.getInstance().player);
-    	if (event.getScreen() instanceof InventoryScreen && FufoPlayerDataCapability.getCapability(Minecraft.getInstance().player).hotbarHandler.isSpellHotbarOpen) {
-    		FufoMod.LOGGER.info("Intercepting");
-    		LocalPlayer player = Minecraft.getInstance().player;
-    		Minecraft.getInstance().setScreen(new SpellInventoryScreen("gui_blank.png", Component.translatable("Spell Inventory"), new SpellContainer(1, 9, 0, 0, cap.hotbarHandler.spellStorage), player));
-    		event.setCanceled(true);
+    	Player player = Minecraft.getInstance().player;
+    	if (player != null) {
+	    	FufoPlayerDataCapability cap = FufoPlayerDataCapability.getCapability(Minecraft.getInstance().player);
+	    	if (event.getScreen() instanceof InventoryScreen && FufoPlayerDataCapability.getCapability(Minecraft.getInstance().player).hotbarHandler.isSpellHotbarOpen) {
+	    		FufoMod.LOGGER.info("Intercepting");
+	    		Minecraft.getInstance().setScreen(new SpellInventoryScreen("gui_blank.png", Component.translatable("Spell Inventory"), new SpellContainer(1, 9, 176, 166, cap.hotbarHandler.spellStorage), player));
+	    		event.setCanceled(true);
+	    	}
     	}
     }
     

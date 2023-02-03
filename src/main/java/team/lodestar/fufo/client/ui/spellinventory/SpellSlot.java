@@ -11,6 +11,7 @@ public class SpellSlot {
 	public SpellSlot(int x, int y) {
 		this.x = x;
 		this.y = y;
+		spell = SpellInstance.EMPTY;
 	}
 	
 	public SpellInstance getSpell() {

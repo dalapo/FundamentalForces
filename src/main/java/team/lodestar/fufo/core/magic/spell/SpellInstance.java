@@ -18,6 +18,7 @@ import team.lodestar.fufo.registry.common.FufoPackets;
 
 import javax.annotation.Nullable;
 
+// Like an ItemStack, but for spells
 public class SpellInstance {
 
     public static final SpellInstance EMPTY = new SpellInstance(FufoSpellTypes.EMPTY);

@@ -19,4 +19,11 @@ public class GuiHelper {
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.setShaderTexture(0, tex);
 	}
+	
+	public static void drawRect(int x, int y, int w, int h, int color) {
+		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.disableDepthTest();
+		RenderSystem.colorMask(true, true, true, false);
+		
+	}
 }

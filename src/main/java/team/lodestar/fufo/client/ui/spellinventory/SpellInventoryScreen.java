@@ -1,15 +1,18 @@
 package team.lodestar.fufo.client.ui.spellinventory;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import team.lodestar.fufo.FufoMod;
 import team.lodestar.fufo.unsorted.util.GuiHelper;
 import team.lodestar.fufo.unsorted.util.MathHelper;
+import team.lodestar.lodestone.systems.ui.screen.LodestoneScreen;
 import net.minecraft.client.gui.Font;
 
 public class SpellInventoryScreen extends Screen {
@@ -24,7 +27,7 @@ public class SpellInventoryScreen extends Screen {
 	
 	public SpellInventoryScreen(String texName, Component title, SpellContainer container, Player player) {
 		super(title);
-		texture = new ResourceLocation("/textures/ui/spellinventory/" + texName);
+		texture = new ResourceLocation(FufoMod.FUFO, "/textures/ui/spellinventory/" + texName);
 		this.container = container;
 	}
 	
@@ -48,6 +51,14 @@ public class SpellInventoryScreen extends Screen {
 		super.init();
 	}
 	
+	protected void drawSlotHighlight(PoseStack posestack, int x, int y, int colour, int blitOffset) {
+		RenderSystem.disableDepthTest();
+		RenderSystem.colorMask(true, true, true, false);
+		fillGradient(posestack, x, y, x + 16, y + 16, colour, colour, blitOffset);
+		RenderSystem.colorMask(true, true, true, true);
+		RenderSystem.enableDepthTest();
+	}
+	
 	@Override
 	public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
 		GuiHelper.bindTexture(texture);
@@ -58,8 +69,10 @@ public class SpellInventoryScreen extends Screen {
 		super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
 		
 		for (int i=0; i<container.getSlotCount(); i++) {
-			if (isHovering(pMouseX, pMouseY, container.getSlot(i))) {
-				// Draw square
+			SpellSlot slot = container.getSlot(i);
+			if (isHovering(pMouseX, pMouseY, slot)) {
+				RenderSystem.setShader(GameRenderer::getPositionTexShader);
+				drawSlotHighlight(pPoseStack, slot.getX(), slot.getY(), 0x80808080, getBlitOffset());
 			}
 		}
 	}

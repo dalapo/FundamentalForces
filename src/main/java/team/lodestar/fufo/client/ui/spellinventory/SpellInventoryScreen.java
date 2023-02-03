@@ -8,8 +8,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import team.lodestar.fufo.FufoMod;
-import team.lodestar.fufo.client.ui.component.FlexBox;
-import team.lodestar.fufo.client.ui.constraint.PixelConstraint;
 import team.lodestar.fufo.unsorted.util.GuiHelper;
 import team.lodestar.fufo.unsorted.util.MathHelper;
 import net.minecraft.client.gui.Font;
@@ -30,8 +28,6 @@ public class SpellInventoryScreen extends Screen {
 		this.container = container;
 	}
 	
-	FlexBox screen;
-	
 	private static boolean isHovering(int mouseX, int mouseY, SpellSlot slot) {
 		int x = slot.getX();
 		int y = slot.getY();
@@ -50,8 +46,6 @@ public class SpellInventoryScreen extends Screen {
 	@Override
 	protected void init() {
 		super.init();
-		screen = new FlexBox().withWidth(new PixelConstraint(width)).withHeight(new PixelConstraint(height)).withAxis(FlexBox.Axis.HORIZONTAL);
-		screen.jerk();
 	}
 	
 	@Override

@@ -53,7 +53,7 @@ public class PlayerSpellHandler {
     // TODO: Cache the SpellContainer as a singleton instance to prevent memory leaks
     // Honestly how does Vanilla do it these days?
     public SpellContainer getContainer() {
-    	return new SpellContainer(4, 9, spellStorage);
+    	return new SpellContainer(4, 9, 176, 166, spellStorage);
     }
     
     public static void playerInteract(PlayerInteractEvent.RightClickBlock event) {

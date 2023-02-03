@@ -57,7 +57,7 @@ public class ClientRuntimeEvents {
     	if (event.getScreen() instanceof InventoryScreen && FufoPlayerDataCapability.getCapability(Minecraft.getInstance().player).hotbarHandler.isSpellHotbarOpen) {
     		FufoMod.LOGGER.info("Intercepting");
     		LocalPlayer player = Minecraft.getInstance().player;
-    		Minecraft.getInstance().setScreen(new SpellInventoryScreen(Component.translatable("Spell Inventory"), new SpellContainer(1, 9, cap.hotbarHandler.spellStorage), player));
+    		Minecraft.getInstance().setScreen(new SpellInventoryScreen("gui_blank.png", Component.translatable("Spell Inventory"), new SpellContainer(1, 9, 0, 0, cap.hotbarHandler.spellStorage), player));
     		event.setCanceled(true);
     	}
     }

@@ -1,5 +1,7 @@
 package team.lodestar.fufo.common.packets;
 
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import team.lodestar.fufo.common.capability.FufoWorldDataCapability;
 import team.lodestar.lodestone.systems.network.LodestoneClientNBTPacket;
 import net.minecraft.client.Minecraft;
@@ -17,6 +19,7 @@ public class FufoWorldCapabilitySyncPacket extends LodestoneClientNBTPacket {
 		super(tag);
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void execute(Supplier<Context> context, CompoundTag tag) {
 		Level world = Minecraft.getInstance().level;

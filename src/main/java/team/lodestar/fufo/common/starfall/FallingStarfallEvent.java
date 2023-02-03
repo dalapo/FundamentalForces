@@ -16,7 +16,6 @@ import team.lodestar.lodestone.helpers.VecHelper;
 import team.lodestar.lodestone.systems.easing.Easing;
 import team.lodestar.lodestone.systems.screenshake.PositionedScreenshakeInstance;
 import team.lodestar.lodestone.systems.worldevent.WorldEventInstance;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -42,8 +41,7 @@ public class FallingStarfallEvent extends WorldEventInstance {
     public int startingHeight;
     public int atmosphericEntryHeight;
 
-    private WorldHighlightFx highlight;//FIXME: this might cause crash on server side
-    //TODO: this WILL cause a crash server side, either store it on the renderer, somewhere. Or store it here as an 'Object' and only manipulate it from a client side thread.
+    public WorldHighlightFx highlight;
 
     public FallingStarfallEvent(AbstractStarfallActor actor, Vec3 position, Vec3 motion, BlockPos targetedPos) {
         super(FufoWorldEventTypes.FALLING_STARFALL);
@@ -89,17 +87,12 @@ public class FallingStarfallEvent extends WorldEventInstance {
     @Override
     public void tick(Level level) {
         move();
+        trackPastPositions();
 
-        if (level instanceof ClientLevel) {
-            if (highlight == null) {
-                highlight = new WorldHighlightFx(new Vector3f(position), 200F, new Vector3f(2F, 1F, 4F));
-                FufoPostProcessingEffects.WORLD_HIGHLIGHT.addFxInstance(highlight);
-            }
-            highlight.center = new Vector3f(position);
+        if (level.isClientSide) {
+            FallingStarfallEvent.ClientOnly.createHighlightFx(this);
         }
 
-
-        trackPastPositions();
         if (position.y() <= targetedPos.getY()) {
             end(level);
         }
@@ -111,63 +104,11 @@ public class FallingStarfallEvent extends WorldEventInstance {
             actor.act(serverLevel, targetedPos);
         } else {
             ScreenshakeHandler.addScreenshake(new PositionedScreenshakeInstance(80, VecHelper.fromBlockPos(targetedPos), 10f, 800f, Easing.EXPO_OUT).setIntensity(3f, 0));
-            highlight.remove();
-            highlight = null;
-            playImpactEffect(new Vector3f(Vec3.atCenterOf(targetedPos)));
+            FallingStarfallEvent.ClientOnly.createEventEndFx(this);
         }
         discarded = true;
     }
 
-    private void playImpactEffect(Vector3f position) {
-        Runnable energyReleaseEffect = () -> {
-            FufoPostProcessingEffects.ENERGY_SCAN.addFxInstance(new EnergyScanFx(position) {
-                @Override
-                public void update(double deltaTime) {
-                    super.update(deltaTime);
-
-                    float t = getTime() / 7.5F;
-                    if (t < 1) {
-                        t = Easing.CIRC_OUT.ease(t, 0F, 1F, 1F);
-                    }
-
-                    virtualRadius = t * 300F;
-                    if (virtualRadius > 1300F) {
-                        remove();
-                    }
-                }
-            });
-            FufoPostProcessingEffects.ENERGY_SPHERE.addFxInstance(new EnergySphereFx(position, 0, 1) {
-                @Override
-                public void update(double deltaTime) {
-                    super.update(deltaTime);
-
-                    float t = getTime() / 7.5F;
-
-                    if (t > 1) {
-                        remove();
-                        return;
-                    }
-                    t = Easing.CIRC_OUT.ease(t, 0F, 1F, 1F);
-
-                    this.radius = t * 300F;
-                    this.intensity = (300F - radius) / 300F;
-                    this.intensity = (float) Mth.clamp(intensity, 0., 1.);
-                }
-            });
-        };
-
-        if (!FufoPostProcessingEffects.IMPACT_FRAME.playEffect(position, .75F, energyReleaseEffect)) {
-            energyReleaseEffect.run();
-        }
-
-        FufoPostProcessingEffects.WORLD_HIGHLIGHT.addFxInstance(new WorldHighlightFx(position, 400F, new Vector3f(8F, 4F, 16F)) {
-            @Override
-            public void update(double deltaTime) {
-                radius -= deltaTime * 20F;
-                if (radius < 0) remove();
-            }
-        });
-    }
 
     @Override
     public boolean isClientSynced() {
@@ -195,5 +136,78 @@ public class FallingStarfallEvent extends WorldEventInstance {
             }
         }
         pastPositions.removeAll(toRemove);
+    }
+
+    public static class ClientOnly {
+
+        public static void createHighlightFx(FallingStarfallEvent event) {
+            if (event.highlight == null) {
+                event.highlight = new WorldHighlightFx(new Vector3f(event.position), 200F, new Vector3f(2F, 1F, 4F));
+                FufoPostProcessingEffects.WORLD_HIGHLIGHT.addFxInstance(event.highlight);
+            }
+        }
+
+        public static void updateHighlightFx(FallingStarfallEvent event) {
+            if (event.highlight != null) { //TODO: discarded events shouldn't render. highlight is only null after the event is discarded. Once we update lodestone in 1.19.2 this line can be removed.
+                event.highlight.center.set((float) event.position.x, (float) event.position.y, (float) event.position.z);
+            }
+        }
+
+        public static void createEventEndFx(FallingStarfallEvent event) {
+            event.highlight.remove();
+            event.highlight = null;
+            playImpactEffect(new Vector3f(event.targetedPos.getX() + 0.5f, event.targetedPos.getY() + 0.5f, event.targetedPos.getZ() + 0.5f));
+        }
+
+        private static void playImpactEffect(Vector3f position) {
+            Runnable energyReleaseEffect = () -> {
+                FufoPostProcessingEffects.ENERGY_SCAN.addFxInstance(new EnergyScanFx(position) {
+                    @Override
+                    public void update(double deltaTime) {
+                        super.update(deltaTime);
+
+                        float t = getTime() / 7.5F;
+                        if (t < 1) {
+                            t = Easing.CIRC_OUT.ease(t, 0F, 1F, 1F);
+                        }
+
+                        virtualRadius = t * 300F;
+                        if (virtualRadius > 1300F) {
+                            remove();
+                        }
+                    }
+                });
+                FufoPostProcessingEffects.ENERGY_SPHERE.addFxInstance(new EnergySphereFx(position, 0, 1) {
+                    @Override
+                    public void update(double deltaTime) {
+                        super.update(deltaTime);
+
+                        float t = getTime() / 7.5F;
+
+                        if (t > 1) {
+                            remove();
+                            return;
+                        }
+                        t = Easing.CIRC_OUT.ease(t, 0F, 1F, 1F);
+
+                        this.radius = t * 300F;
+                        this.intensity = (300F - radius) / 300F;
+                        this.intensity = (float) Mth.clamp(intensity, 0., 1.);
+                    }
+                });
+            };
+
+            if (!FufoPostProcessingEffects.IMPACT_FRAME.playEffect(position, .75F, energyReleaseEffect)) {
+                energyReleaseEffect.run();
+            }
+
+            FufoPostProcessingEffects.WORLD_HIGHLIGHT.addFxInstance(new WorldHighlightFx(position, 400F, new Vector3f(8F, 4F, 16F)) {
+                @Override
+                public void update(double deltaTime) {
+                    radius -= deltaTime * 20F;
+                    if (radius < 0) remove();
+                }
+            });
+        }
     }
 }

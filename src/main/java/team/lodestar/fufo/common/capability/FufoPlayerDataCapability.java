@@ -14,6 +14,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.network.PacketDistributor;
 import team.lodestar.fufo.FufoMod;
 import team.lodestar.fufo.common.packets.FufoPlayerCapabilitySyncPacket;
@@ -23,6 +24,7 @@ import team.lodestar.fufo.common.magic.spell.SpellStorage;
 import team.lodestar.fufo.registry.common.FufoPackets;
 import team.lodestar.fufo.registry.common.magic.FufoPlayerStateKeys;
 import team.lodestar.fufo.registry.common.magic.FufoPlayerStateKeys.FufoPlayerState;
+import team.lodestar.fufo.registry.common.magic.FufoSpellTypes;
 import team.lodestar.fufo.unsorted.handlers.ProgressionHandler;
 import team.lodestar.lodestone.helpers.NBTHelper;
 import team.lodestar.lodestone.systems.capability.LodestoneCapability;
@@ -33,7 +35,6 @@ import java.util.HashMap;
 public class FufoPlayerDataCapability implements LodestoneCapability {
 
     //shove all player data here, use PlayerDataCapability.getCapability(player) to access data.
-    //TODO implement system to store progression unlocks (including runes)
 
     public static Capability<FufoPlayerDataCapability> CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {
     });
@@ -44,6 +45,9 @@ public class FufoPlayerDataCapability implements LodestoneCapability {
     public ProgressionHandler progressHandler = new ProgressionHandler();
     public FufoPlayerStateKeys.PlayerStateMap<FufoPlayerState> states = new FufoPlayerStateKeys.PlayerStateMap<>();
     public FufoPlayerDataCapability() {
+        if (!FMLEnvironment.production) {
+            hotbarHandler = FufoSpellTypes.DebugSpellTypes.allTheDevSpellsPlease();
+        }
     }
 
     public static void registerCapabilities(RegisterCapabilitiesEvent event) {

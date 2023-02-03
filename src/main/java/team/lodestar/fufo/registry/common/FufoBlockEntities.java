@@ -18,12 +18,6 @@ public class FufoBlockEntities {
     public static final BlockEntityEntry<FluidTankBlockEntity> FLUID_TANK =
             FufoMod.registrate().blockEntity("fluid_tank", FluidTankBlockEntity::new).validBlocks(FufoBlocks.SEALED_TANK).register();
 
-    public static final BlockEntityEntry<BurnerExtractorBlockEntity> BURNER_EXTRACTOR =
-            FufoMod.registrate().blockEntity("burner_extractor", BurnerExtractorBlockEntity::new).register();
-
-    public static final BlockEntityEntry<UITestBlockEntity> UI_TEST_BLOCK =
-            FufoMod.registrate().blockEntity("ui_test_block", UITestBlockEntity::new).renderer(() -> UIRenderer::new).validBlocks(FufoBlocks.UI_TEST).register();
-
     public static final BlockEntityEntry<PipeNodeBlockEntity> ANCHOR =
             FufoMod.registrate().blockEntity("anchor", PipeNodeBlockEntity::new).validBlocks(FufoBlocks.PIPE_ANCHOR).renderer(() -> AnchorRenderer::new).register();
 

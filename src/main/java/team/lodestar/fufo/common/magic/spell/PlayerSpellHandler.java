@@ -5,9 +5,12 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -201,8 +204,9 @@ public class PlayerSpellHandler {
             LocalPlayer player = minecraft.player;
             if (event.getOverlay() == VanillaGuiOverlay.PLAYER_HEALTH.type() && !player.isSpectator()) { // TODO 1.19: fix like superior shields
                 FufoPlayerDataCapability.getCapabilityOptional(player).ifPresent(c -> {
-                    if (c.hotbarHandler.animationProgress >= 0.5f) {
-                        float progress = Math.max(0, c.hotbarHandler.animationProgress - 0.5f) * 2f;
+                    final PlayerSpellHandler hotbarHandler = c.hotbarHandler;
+                    if (hotbarHandler.animationProgress >= 0.5f) {
+                        float progress = Math.max(0, hotbarHandler.animationProgress - 0.5f) * 2f;
                         float offset = (1 - progress) * 45;
                         int left = event.getWindow().getGuiScaledWidth() / 2 - 109;
                         int top = event.getWindow().getGuiScaledHeight() - 31;
@@ -223,8 +227,8 @@ public class PlayerSpellHandler {
                         barBuilder.setUVWithWidth(0, 28, 28, 30, 256f).setPositionWithWidth(left + slot * 24 - 1, top - 1, 28, 30).draw(poseStack);
 
                         barBuilder.setUVWithWidth(28, 28, 20, 22, 256f);
-                        for (int i = 0; i < c.hotbarHandler.spellStorage.size; i++) {
-                            SpellInstance instance = c.hotbarHandler.spellStorage.spells.get(i);
+                        for (int i = 0; i < hotbarHandler.spellStorage.size; i++) {
+                            SpellInstance instance = hotbarHandler.spellStorage.spells.get(i);
                             if (!instance.isEmpty()) {
                                 ResourceLocation background = instance.spellType.getBackgroundLocation(instance);
                                 ResourceLocation icon = instance.spellType.getIconLocation(instance);
@@ -254,6 +258,17 @@ public class PlayerSpellHandler {
                             }
                         }
                         spellShine.setUniformDefaults();
+                        SpellInstance selectedSpell = hotbarHandler.spellStorage.getSelectedSpell(player);
+
+                        int visibility = 255;
+
+                        Component spellName = Component.literal(selectedSpell.spellType.id.getPath());
+                        Gui gui = minecraft.gui;
+                        int textWidth = gui.getFont().width(spellName);
+                        int textLeft = (event.getWindow().getGuiScaledWidth() - textWidth) / 2;
+                        int textTop = top - 20;
+                        minecraft.gui.getFont().drawShadow(poseStack, spellName, textLeft, textTop, 16777215 + (visibility << 24));
+
                         RenderSystem.disableBlend();
                         poseStack.popPose();
                     }

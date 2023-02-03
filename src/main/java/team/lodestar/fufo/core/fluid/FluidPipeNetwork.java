@@ -155,10 +155,10 @@ public class FluidPipeNetwork {
 			List<PipeNode> outlets = p.getConnectedNodes(FlowDir.OUT);
 			
 			for (PipeNode in : inlets) {
-				recalcPressureHelper(p, FlowDir.IN, in, new HashSet<PipeNode>(), Math.sqrt(p.getPos().distSqr(in.getPos())));
+				recalcPressureHelper(p, FlowDir.IN, in, new HashSet<>(), Math.sqrt(p.getPos().distSqr(in.getPos())));
 			}
 			for (PipeNode out : outlets) {
-				recalcPressureHelper(p, FlowDir.OUT, out, new HashSet<PipeNode>(), Math.sqrt(p.getPos().distSqr(out.getPos())));
+				recalcPressureHelper(p, FlowDir.OUT, out, new HashSet<>(), Math.sqrt(p.getPos().distSqr(out.getPos())));
 			}
 		}
 	}

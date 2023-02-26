@@ -6,7 +6,7 @@
 <br>
 <br>
 *"...In physics, the fundamental forces are the interactions that do not appear to be reducible to more basic interactions. There are five fundamental interactions known to exist, listed in order of scientific understanding from greatest to least: the Gravitational and Electromagnetic forces, which produce significant long-range interactions whose effects can be seen directly in everyday life, the Binding and Balancing forces, which produce forces at minuscule, subatomic distances and govern nuclear interactions, and Quintessence, which alters and exerts control over the other four and their constants to maintain manifold stability..."*
-<br>
+<br>*-Pre-Decay data fragment*
 <br>
    
 A magic mod about harnessing magic as a science, while you uncover the ruins and vaults of a dead magitech civilization and discover the (unfortunately still living) extrauniversal thing that killed them.
